@@ -7,7 +7,6 @@ import User from "../../../models/users.model";
 import bcrypt from "bcrypt";
 import { isEqual } from "lodash";
 
-
 let cacheUser = {};
 
 export const authOptions: NextAuthOptions = {
@@ -49,32 +48,38 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async session({ session}) {
-
-      if (typeof session.user !== 'undefined' && !isEqual(cacheUser, session.user)) {
-      try {
-         await dbConnect()
-        const existingUser =await User.findOne({email: session.user.email});
-        if(!existingUser){
-          const user = await User.create({
+    async session({ session }) {
+      if (
+        typeof session.user !== "undefined" &&
+        !isEqual(cacheUser, session.user)
+      ) {
+        try {
+          await dbConnect();
+          const existingUser = await User.findOne({
             email: session.user.email,
-            name : session.user.name,
-            image: session.user.image
-          })
-        }else{
-          const updatedUserData = {
-            name: session.user.name,
-            image:session.user.image,
-          };
-           const u = await User.findOneAndUpdate(
-            { email: session.user.email },
-            updatedUserData
-          );
+          });
+          if (!existingUser) {
+            const user = await User.create({
+              email: session.user.email,
+              name: session.user.name,
+              image: session.user.image,
+            });
+          } else {
+            const updatedUserData = {
+              name: session.user.name,
+              image: session.user.image,
+            };
+            const u = await User.findOneAndUpdate(
+              { email: session.user.email },
+              updatedUserData
+            );
+          }
+          cacheUser = session.user;
+        } catch (error) {
+          console.log(error);
         }
-       cacheUser = session.user;
-      }catch (error) {
-        console.log(error)
-      }
+      } else {
+        console.log("same session no DB");
       }
       return session;
     },

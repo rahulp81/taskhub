@@ -11,11 +11,11 @@ function Login() {
   const router = useRouter();
 
   function handleGoogleSignIn() {
-    signIn('google', { callbackUrl: 'http://localhost:3000/dashboard' })
+    signIn('google', { callbackUrl: 'http://localhost:3000/app/today' })
   }
 
   function handleFacebookSignIn() {
-    signIn('facebook', { callbackUrl: 'http://localhost:3000/dashboard' })
+    signIn('facebook', { callbackUrl: 'http://localhost:3000/app/today' })
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -33,7 +33,7 @@ function Login() {
       })
       if(!res?.error){
         console.log('sucess')
-        router.replace('/dashboard')
+        router.replace('/app/today')
       }
     } catch (error) {
       console.log(error)

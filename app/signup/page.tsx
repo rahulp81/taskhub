@@ -59,11 +59,11 @@ async function handleRegisterSubmit(e: FormEvent) {
 function SignUp() {
 
     function handleGoogleSignIn() {
-      signIn('google', { callbackUrl: 'http://localhost:3000/dashboard' })
+      signIn('google', { callbackUrl: 'http://localhost:3000/app/today' })
     }
 
     function handleFacebookSignIn() {
-      signIn('facebook', { callbackUrl: 'http://localhost:3000/dashboard' })
+      signIn('facebook', { callbackUrl: 'http://localhost:3000/app/today' })
     }
 
   return (

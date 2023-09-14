@@ -7,7 +7,7 @@ export default async function Homepage() {
   if(!session){
     redirect('/login')
   }else{
-    redirect("/dashboard")
+    redirect("/app")
   }
   return (
     <>
