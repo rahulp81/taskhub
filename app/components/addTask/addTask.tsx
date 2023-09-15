@@ -1,12 +1,44 @@
 "use client"
-import { useState } from 'react';
+import { FormEvent, useContext, useRef, useState } from 'react';
 import DueDate from '../Svg/DueDate';
 import Priority from '../Svg/Priority';
 import Label from '../Svg/Label';
+import { SetTaskContext, TaskContext } from '../context/taskContext';
 
 
 function addTask() {
   const [editing, setEditing] = useState(false)
+  const [taskPriority, setTaskPriority] = useState('P4');
+  const [name,setName] = useState('');
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const setTask = useContext(SetTaskContext);
+
+  function createTask(e: FormEvent) {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
+    const name = formData.get('task-name') as string | null;
+    const description = formData.get('task-description') as string | null;
+    const id = Date.now() as number;
+    const priority = taskPriority;
+    const taskDetail = { name, description, id,priority };
+    setTask((prevTasks) => [...prevTasks, taskDetail]);
+    const form = e.currentTarget as HTMLFormElement;
+    setTaskPriority('P4');
+    form.reset();
+    setName('');
+  }
+
+  function cancelTask(){
+    if(formRef.current){
+      setEditing(!editing);
+      setTaskPriority('P4');
+      formRef.current.reset();
+      setName('');
+    }
+  }
+
+
   return (
     (!editing) ?
       (<button className="flex gap-2 text-sm items-center text-gray-500 group py-1 w-full" onClick={() => { setEditing(!editing) }}>
@@ -24,14 +56,14 @@ function addTask() {
       :
       (
         // onClick={() => {setEditing(!editing)}}
-        <form className='border-[1px] rounded-lg flex flex-col  border-gray-400'>
+        <form className='border-[1px] rounded-lg flex flex-col  border-gray-400' onSubmit={createTask} ref={formRef}>
           <div className='gap-2 flex flex-col px-3 py-2'>
-            <input type="text" placeholder='Task Name' className='placeholder:font-medium font-medium' />
-            <input type="text" placeholder='Description' className='placeholder:font-normal ml-0.5 text-[14px] placeholder:text-sm ' />
+            <input type="text" name='task-name' placeholder='Task Name' className='placeholder:font-medium font-medium' value={name} onChange={(e) => {setName(e.target.value)} } />
+            <input type="text" name='task-description' placeholder='Description' className='placeholder:font-normal ml-0.5 text-[14px] placeholder:text-sm ' />
           </div>
-          <div className='flex gap-3 px-3 pt-1.5 pb-4'>
+          <div className='flex gap-3 px-3 mt-1.5 mb-4 relative'>
             <DueDate />
-            <Priority />
+            <Priority setPriority={setTaskPriority} priority={taskPriority} />
             <Label />
           </div>
           <div className='border-t-[1px] px-3 py-2 flex justify-between'>
@@ -43,10 +75,10 @@ function addTask() {
               </div>
             </button>
             <div className='flex gap-2'>
-              <button type='button' className='text-sm  px-3 rounded font-semibold bg-zinc-100 hover:bg-zinc-200' onClick={()=> setEditing(!editing)}>
+              <button type='button' className='text-sm  px-3 rounded font-semibold bg-zinc-100 hover:bg-zinc-200' onClick={cancelTask}>
                 Cancel
               </button>
-              <button type='button' className={'text-sm px-3 rounded font-semibold bg-blue-500 text-white hover:bg-blue-600'}>
+              <button type='submit' disabled={(name) ? false : true } className={`${name ? 'bg-blue-500 hover:bg-blue-600 ' : 'bg-blue-200 cursor-not-allowed ' }  text-sm px-3 rounded font-semibold  text-white `}>
                 Add task
               </button>
             </div>

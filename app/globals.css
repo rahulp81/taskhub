@@ -91,10 +91,14 @@
 .app-container{
 --max-width: 900px;
 margin-inline: auto;
-width: min((100% - 2rem), var(--max-width));
+width: min((100% - 4rem), var(--max-width));
 }
 
 input:focus,
 input:active {
   outline: none;
+}
+
+.done:hover span{
+  display: block;
 }

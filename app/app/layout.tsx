@@ -7,7 +7,8 @@ import SearchIcon from '../components/Svg/SearchIcon'
 import SideMenu from "../components/sideMenu/SideMenu"
 import { useState, useContext } from "react"
 import SideMenuContext from "../components/context/sideMenuContext"
-import {usePathname} from 'next/navigation'
+import TaskContext from "../components/context/TasksContext"
+import { usePathname } from 'next/navigation'
 
 export default function DashboardLayout({ children, }: { children: React.ReactNode }) {
   const [sideMenuActive, setSideMenu] = useState<boolean>(true);
@@ -59,13 +60,15 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
           </div>
         </div>
       </header>
-      {/* For transition of children aka today,upcoming etc make the sidemenu fixed instead and add or remove margin equivalent to sidemenu width to the 
-      children and laso remove mx auto fr transition mrgin left +ive to work */}
-      <main className={`flex grow justify-center main-container menu-open ${sideMenuActive ? 'active' :''}`}>
+      <main className={`flex grow justify-center main-container menu-open ${sideMenuActive ? 'active' : ''}`}>
         <div className="max-w-[1800px] flex flex-row  w-full">
           <SideMenuContext.Provider value={sideMenuActive}>
-            <SideMenu active={sideMenuActive} />
-            {children}
+            <TaskContext>
+              {/* Components */}
+              <SideMenu active={sideMenuActive} />
+              {children}
+              {/* Components */}
+            </TaskContext>
           </SideMenuContext.Provider>
         </div>
       </main>
