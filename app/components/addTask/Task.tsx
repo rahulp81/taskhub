@@ -27,6 +27,7 @@ export default function Task({ task }: TaskProps) {
   const [description, setDescription] = useState(task.description);
 
 
+
   function editTask(e: FormEvent) {
     e.preventDefault();
     setPriority(updatedPriority);
@@ -57,6 +58,7 @@ export default function Task({ task }: TaskProps) {
   }
 
 
+
   return (!isEditing) ?
     (<li
       key={task.id}
@@ -65,8 +67,9 @@ export default function Task({ task }: TaskProps) {
         <span className="absolute -top-[2px] -left-[33px] opacity-0 group-hover:opacity-100 rounded hover:bg-slate-100 cursor-move p-[2px]">
           <Image src={'/icons/drag.svg'} alt="drag" height={20} width={20} />
         </span>
-        <button className=" done | w-[20px] h-[20px] border-[1.5px] border-gray-500 p-1 rounded-full flex items-center hover:bg-slate-100">
-          <span className="text-sm hidden">&#x2713;</span>
+        <button className={`done | w-[20px] h-[20px] border-[1.5px]  p-1 rounded-full flex items-center hover:bg-slate-100
+         ${priority == 'P1' ?  `border-red-500 bg-red-300` : priority =='P2' ? `border-orange-500 bg-orange-300 ` : priority =='P3' ? `border-blue-500 bg-blue-300`  :`border-gray-500`} `}>
+          <span className="text-sm font-bold text-green-600 hidden">&#x2713;</span>
         </button>
         <div className='flex flex-col'>
           <span>{task.name}</span>
@@ -74,7 +77,7 @@ export default function Task({ task }: TaskProps) {
         </div>
       </div>
       <div className="">
-        <div className="flex gap-2 -mt-1 opacity-0 group-hover:opacity-100">
+        <div className="flex gap-2 -mt-2 ">
           <button className="rounded hover:bg-slate-200 p-1" onClick={() => setIsEditing(!isEditing)}>
             <div className="">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#000000" fill="none" strokeLinecap="round" strokeLinejoin="round">
@@ -98,7 +101,7 @@ export default function Task({ task }: TaskProps) {
             </div>
           </button>
           <button className="rounded hover:bg-slate-200 p-1 relative" onClick={() => setIsVisible(!isVisible)}>
-            <TaskMenu active={isVisible} />
+            <TaskMenu key={task.id} active={isVisible} />
             <div className="">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" /></svg>
             </div>

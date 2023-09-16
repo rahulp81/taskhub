@@ -11,7 +11,6 @@ import Link from 'next/dist/client/link'
 
 function SideMenu({ active }: { active: boolean }) {
     const currentRoute = usePathname();
-    console.log(currentRoute);
     
     return (
         <section

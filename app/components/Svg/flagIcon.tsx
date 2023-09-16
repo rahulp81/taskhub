@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+"use client"
+import React, { useEffect, useRef, useState } from 'react'
 
 interface PriorityProps {
     setPriority: React.Dispatch<React.SetStateAction<string>>;
@@ -9,15 +10,30 @@ interface PriorityProps {
 
 function flagIcon({ setPriority, priority, color }: PriorityProps) {
     const [active, setActive] = useState(false)
-    function handleXclick(e: React.MouseEvent<HTMLButtonElement>) {
-        console.log('clicked');
+    const priorityMenuRef = useRef(null);
+    const priorityButtonRef = useRef<HTMLButtonElement | null>(null);
 
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (e.target !== priorityMenuRef.current && !priorityButtonRef.current?.contains(e.target as Node)) {
+                setActive(false);
+            }
+        };
+        window.addEventListener('click', handleClickOutside);
+
+        return () => {
+            window.removeEventListener('click', handleClickOutside);
+        };
+    }, []);
+
+    function handleXclick(e: React.MouseEvent<HTMLButtonElement>) {
         e.stopPropagation();
         setPriority('P4');
     }
     return (
         <div className='relative'>
-            <button type="button" className='hover:bg-blue-50 rounded-md flex justify-center items-center gap-1.5  group py-1.5 px-2 border-[1px] border-gray-300' onClick={() => setActive(!active)}>
+            <button type="button" className='hover:bg-blue-50 rounded-md flex justify-center items-center gap-1.5  group py-1.5 px-2 border-[1px] border-gray-300' 
+            onClick={() => setActive(!active)} ref={priorityButtonRef} >
                 <span>
                     <svg xmlns="http://www.w3.org/2000/svg" className={`${color}`} width="20" height="20" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#ff2825" fill="" strokeLinecap="round" strokeLinejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -31,7 +47,7 @@ function flagIcon({ setPriority, priority, color }: PriorityProps) {
             </button>
             {/* Drop down Menu */}
             {active &&
-                <div className={` absolute top-[99%] -left-3 border-[1px] w-32 rounded-md shadow-md bg-white z-50 ${active ? 'block' : 'block'}`}>
+                <div className={` absolute top-[99%] -left-3 border-[1px] w-32 rounded-md shadow-md bg-white z-50 ${active ? 'block' : 'block'}`} ref={priorityMenuRef}>
                     <ul className="w-full border-[1px] rounded-md">
                         <li className="w-full " onClick={() => {
                             setPriority('P1');
@@ -90,9 +106,10 @@ function flagIcon({ setPriority, priority, color }: PriorityProps) {
                         }}>
                             <button type="button" className='hover:bg-blue-50 rounded-md flex  w-full items-center gap-1.5  group py-1.5 px-2  border-gray-300'>
                                 <span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" className={`fill-blue-700`} width="22" height="22" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#ff2825" fill="" strokeLinecap="round" strokeLinejoin="round">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                        <path d="M4 5a1 1 0 0 1 .3 -.714a6 6 0 0 1 8.213 -.176l.351 .328a4 4 0 0 0 5.272 0l.249 -.227c.61 -.483 1.527 -.097 1.61 .676l.005 .113v9a1 1 0 0 1 -.3 .714a6 6 0 0 1 -8.213 .176l-.351 -.328a4 4 0 0 0 -5.136 -.114v6.552a1 1 0 0 1 -1.993 .117l-.007 -.117v-16z" stroke-width="0" fill="" />
+                                        <path d="M5 5a5 5 0 0 1 7 0a5 5 0 0 0 7 0v9a5 5 0 0 1 -7 0a5 5 0 0 0 -7 0v-9z" />
+                                        <path d="M5 21v-7" />
                                     </svg>
                                 </span>
                                 <span className='text-xs text-gray-600 font-normal group-hover:text-black mr-2'>Priority 4</span>
