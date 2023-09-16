@@ -3,6 +3,7 @@
     name: string | null;
     description?: string | null;
     priority?:string | null | undefined;
+    due?: Date | null;
     // Add any other properties you need
   };
 

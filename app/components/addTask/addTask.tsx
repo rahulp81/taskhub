@@ -1,5 +1,5 @@
 "use client"
-import { FormEvent, useContext, useRef, useState } from 'react';
+import { FormEvent, useContext, useReducer, useRef, useState } from 'react';
 import DueDate from '../Svg/DueDate';
 import Priority from '../Svg/Priority';
 import Label from '../Svg/Label';
@@ -11,6 +11,7 @@ function addTask() {
   const [taskPriority, setTaskPriority] = useState('P4');
   const [name,setName] = useState('');
   const formRef = useRef<HTMLFormElement>(null);
+  const [dueDate,setDueDate] = useState<Date | null>(null)
 
   const setTask = useContext(SetTaskContext);
 
@@ -21,10 +22,12 @@ function addTask() {
     const description = formData.get('task-description') as string | null;
     const id = Date.now() as number;
     const priority = taskPriority;
-    const taskDetail = { name, description, id,priority };
+    const due =dueDate;
+    const taskDetail = { name, description, id,priority,due};
     setTask((prevTasks) => [...prevTasks, taskDetail]);
     const form = e.currentTarget as HTMLFormElement;
     setTaskPriority('P4');
+    setDueDate(null);
     form.reset();
     setName('');
   }
@@ -62,7 +65,7 @@ function addTask() {
             <input type="text" name='task-description' placeholder='Description' className='placeholder:font-normal ml-0.5 text-[14px] placeholder:text-sm ' />
           </div>
           <div className='flex gap-3 px-3 mt-1.5 mb-4 relative'>
-            <DueDate />
+            <DueDate dueDate={dueDate} setDueDate={setDueDate} />
             <Priority setPriority={setTaskPriority} priority={taskPriority} />
             <Label />
           </div>

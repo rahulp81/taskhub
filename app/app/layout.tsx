@@ -5,10 +5,10 @@ import React from 'react'
 import { redirect } from 'next/navigation'
 import SearchIcon from '../components/Svg/SearchIcon'
 import SideMenu from "../components/sideMenu/SideMenu"
-import { useState, useContext } from "react"
+import { useState } from "react"
 import SideMenuContext from "../components/context/sideMenuContext"
 import TaskContext from "../components/context/TasksContext"
-import { usePathname } from 'next/navigation'
+
 
 export default function DashboardLayout({ children, }: { children: React.ReactNode }) {
   const [sideMenuActive, setSideMenu] = useState<boolean>(true);
@@ -64,10 +64,10 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
         <div className="max-w-[1800px] flex flex-row  w-full">
           <SideMenuContext.Provider value={sideMenuActive}>
             <TaskContext>
-              {/* Components */}
-              <SideMenu active={sideMenuActive} />
-              {children}
-              {/* Components */}
+                {/* Components */}
+                <SideMenu active={sideMenuActive} />
+                {children}
+                {/* Components */}
             </TaskContext>
           </SideMenuContext.Provider>
         </div>

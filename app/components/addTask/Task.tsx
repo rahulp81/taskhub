@@ -16,9 +16,10 @@ export default function Task({ task }: TaskProps) {
   const updateTask = useContext(SetTaskContext);
   const tasks = useContext(TaskContext)
   const [isEditing, setIsEditing] = useState(false);
-  const [dueDate, setDueDate] = useState('')
+  const [dueDate, setDueDate] = useState<Date | null>(task.due as Date)
   const [priority, setPriority] = useState(task.priority as string)
   const [updatedPriority,setUpdatedPriority] = useState(priority);
+  const [updatedDueDate, setUpdatedDueDate] = useState<Date | null>(task.due as Date)
 
   const [isVisible, setIsVisible] = useState(false);
 
@@ -36,6 +37,7 @@ export default function Task({ task }: TaskProps) {
     const description = formData.get('task-description') as string | null;
     const id = task.id;
     const priority = updatedPriority;
+    const due = updatedDueDate;
     const updatedTasks = [...tasks];
     const taskIndex = updatedTasks.findIndex((orginalTask) => orginalTask.id === id)
 
@@ -45,6 +47,7 @@ export default function Task({ task }: TaskProps) {
         name: name,
         description: description,
         priority:priority,
+        due: updatedDueDate,
       }
     }
     updateTask(updatedTasks);
@@ -119,7 +122,7 @@ export default function Task({ task }: TaskProps) {
             <input type="text" value={description as string} onChange={(e) => { setDescription(e.target.value) }} name='task-description' placeholder='Description' className='placeholder:font-normal ml-0.5 text-[14px] placeholder:text-sm ' />
           </div>
           <div className='flex gap-2.5 px-3 pt-1.5 pb-4'>
-            <DueDate />
+            <DueDate dueDate={updatedDueDate} setDueDate={setUpdatedDueDate} />
             <Priority setPriority={setUpdatedPriority} priority={updatedPriority} />
             <Label />
           </div>

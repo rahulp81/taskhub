@@ -5,6 +5,7 @@ type Task = {
     name: string | null;
     description?: string | null;
     priority?:string | null;
+    due?:Date | null;
     // Add any other properties you need
   };
   // Define the types for your contexts

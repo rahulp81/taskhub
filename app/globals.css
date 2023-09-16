@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "~react-datepicker/dist/react-datepicker.css";
+
 .formContainer {
   --max-width: 1000px;
   margin-inline: auto;
@@ -101,4 +103,16 @@ input:active {
 
 .done:hover span{
   display: block;
+}
+
+/* styles.css */
+.date-calendar-container {
+ border: 2px solid red;
+ max-width: 250px;
+ max-height: 300px;
+}
+
+.css-4jnixx-MuiStack-root>.MuiTextField-root{
+  max-width: 175px !important;
+  min-width: 0px !important;
 }
