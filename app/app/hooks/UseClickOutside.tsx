@@ -1,8 +1,8 @@
 import {useEffect} from "react";
 
 type UseClickOutsideProps = {
-    buttonRef: React.RefObject<HTMLElement>,
-    dropdownRef:React.RefObject<HTMLElement> ,
+    buttonRef: React.RefObject<HTMLButtonElement | null>,
+    dropdownRef:React.RefObject<HTMLDivElement | null> ,
     setIsActive: React.Dispatch<React.SetStateAction<boolean>>
 }
 

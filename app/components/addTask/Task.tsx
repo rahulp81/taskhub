@@ -138,6 +138,7 @@ export default function Task({ task }: TaskProps) {
               <button type='button' className='text-sm  px-3 rounded font-semibold bg-zinc-100 hover:bg-zinc-200' onClick={() => {
                 setIsEditing(!isEditing);
                 setUpdatedPriority(priority);
+                setUpdatedDueDate(dueDate)
                 }}>
                 Cancel
               </button>

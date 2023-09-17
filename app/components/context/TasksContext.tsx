@@ -5,7 +5,7 @@ type Task = {
   id : number,
   name: string | null;
   description?: string | null;
-  // Add any other properties you need
+  label?: string[];
 };
 
 function TasksContext({

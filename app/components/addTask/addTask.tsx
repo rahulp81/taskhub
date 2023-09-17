@@ -12,6 +12,7 @@ function addTask() {
   const [name,setName] = useState('');
   const formRef = useRef<HTMLFormElement>(null);
   const [dueDate,setDueDate] = useState<Date | null>(null)
+  const [labels,setLabels] = useState<string[] | null>([])
 
   const setTask = useContext(SetTaskContext);
 
@@ -23,11 +24,13 @@ function addTask() {
     const id = Date.now() as number;
     const priority = taskPriority;
     const due =dueDate;
-    const taskDetail = { name, description, id,priority,due};
+    const label = labels;
+    const taskDetail = { name, description, id,priority,due,label};
     setTask((prevTasks) => [...prevTasks, taskDetail]);
     const form = e.currentTarget as HTMLFormElement;
     setTaskPriority('P4');
     setDueDate(null);
+    setLabels([]);
     form.reset();
     setName('');
   }
@@ -36,6 +39,8 @@ function addTask() {
     if(formRef.current){
       setEditing(!editing);
       setTaskPriority('P4');
+      setDueDate(null);
+      setLabels([]);
       formRef.current.reset();
       setName('');
     }
@@ -67,7 +72,7 @@ function addTask() {
           <div className='flex gap-3 px-3 mt-1.5 mb-4 relative'>
             <DueDate dueDate={dueDate} setDueDate={setDueDate} />
             <Priority setPriority={setTaskPriority} priority={taskPriority} />
-            <Label />
+            <Label setLabels ={setLabels} labels ={labels} />
           </div>
           <div className='border-t-[1px] px-3 py-2 flex justify-between'>
             <button className='px-2 py-2  rounded hover:bg-blue-50'>
