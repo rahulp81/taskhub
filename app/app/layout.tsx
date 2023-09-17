@@ -7,8 +7,8 @@ import SearchIcon from '../components/Svg/SearchIcon'
 import SideMenu from "../components/sideMenu/SideMenu"
 import { useState } from "react"
 import SideMenuContext from "../components/context/sideMenuContext"
-import TaskContext from "../components/context/TasksContext"
-
+import TaskContextProvider from "../components/context/TasksContext"
+import { TagsProvider } from "../components/context/TagsContext"
 
 export default function DashboardLayout({ children, }: { children: React.ReactNode }) {
   const [sideMenuActive, setSideMenu] = useState<boolean>(true);
@@ -63,12 +63,14 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
       <main className={`flex grow justify-center main-container menu-open ${sideMenuActive ? 'active' : ''}`}>
         <div className="max-w-[1800px] flex flex-row  w-full">
           <SideMenuContext.Provider value={sideMenuActive}>
-            <TaskContext>
+            <TaskContextProvider>
+              <TagsProvider >
                 {/* Components */}
                 <SideMenu active={sideMenuActive} />
                 {children}
                 {/* Components */}
-            </TaskContext>
+              </TagsProvider>
+            </TaskContextProvider>
           </SideMenuContext.Provider>
         </div>
       </main>

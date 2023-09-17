@@ -4,6 +4,7 @@ import DueDate from '../Svg/DueDate';
 import Priority from '../Svg/Priority';
 import Label from '../Svg/Label';
 import { SetTaskContext, TaskContext } from '../context/taskContext';
+import { useTagsContext } from '../context/TagsContext';
 
 
 function addTask() {
@@ -15,6 +16,7 @@ function addTask() {
   const [labels,setLabels] = useState<string[] | null>([])
 
   const setTask = useContext(SetTaskContext);
+
 
   function createTask(e: FormEvent) {
     e.preventDefault();
@@ -66,7 +68,8 @@ function addTask() {
         // onClick={() => {setEditing(!editing)}}
         <form className='border-[1px] rounded-lg flex flex-col  border-gray-400' onSubmit={createTask} ref={formRef}>
           <div className='gap-2 flex flex-col px-3 py-2'>
-            <input type="text" name='task-name' placeholder='Task Name' className='placeholder:font-medium font-medium' value={name} onChange={(e) => {setName(e.target.value)} } />
+            <input type="text" name='task-name' placeholder='Task Name' className='placeholder:font-medium font-medium'
+             value={name} onChange={(e) => {setName(e.target.value)} } />
             <input type="text" name='task-description' placeholder='Description' className='placeholder:font-normal ml-0.5 text-[14px] placeholder:text-sm ' />
           </div>
           <div className='flex gap-3 px-3 mt-1.5 mb-4 relative'>
