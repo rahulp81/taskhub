@@ -27,7 +27,7 @@ function Today() {
         </div>
         <div className="flex flex-col w-full gap-2 ">
           <ul>
-            {tasks.map((task, index) => (
+            {tasks.map((task) => (
               <Task key={task.id} task={task}/>
             ))}
           </ul>

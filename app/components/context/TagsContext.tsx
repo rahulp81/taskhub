@@ -18,8 +18,6 @@ export function useTagsContext() {
 
 export const TagsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [tags, setTags] = useState<string[] | null>([]);
-  console.log('tags are',tags);
-  
   return (
     <TagsContext.Provider value={{ tags, setTags }}>
       {children}

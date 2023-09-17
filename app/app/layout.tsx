@@ -9,6 +9,7 @@ import { useState } from "react"
 import SideMenuContext from "../components/context/sideMenuContext"
 import TaskContextProvider from "../components/context/TasksContext"
 import { TagsProvider } from "../components/context/TagsContext"
+import { ProjectProvider } from "../components/context/ProjectContextWrapper"
 
 export default function DashboardLayout({ children, }: { children: React.ReactNode }) {
   const [sideMenuActive, setSideMenu] = useState<boolean>(true);
@@ -65,10 +66,12 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
           <SideMenuContext.Provider value={sideMenuActive}>
             <TaskContextProvider>
               <TagsProvider >
-                {/* Components */}
-                <SideMenu active={sideMenuActive} />
-                {children}
-                {/* Components */}
+                <ProjectProvider>
+                  {/* Components */}
+                  <SideMenu active={sideMenuActive} />
+                  {children}
+                  {/* Components */}
+                </ProjectProvider>
               </TagsProvider>
             </TaskContextProvider>
           </SideMenuContext.Provider>

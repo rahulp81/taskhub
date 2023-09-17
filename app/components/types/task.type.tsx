@@ -5,6 +5,7 @@
     priority?:string | null | undefined;
     due?: Date | null;
     label?: string[];
+    project?:string | null,
     // Add any other properties you need
   };
 

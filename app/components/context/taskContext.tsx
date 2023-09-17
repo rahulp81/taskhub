@@ -7,6 +7,7 @@ type Task = {
     priority?:string | null;
     due?:Date | null;
     labels? :string[] | null;
+    project?: string | null;
   };
   // Define the types for your contexts
   type TaskContextType = Task[];
