@@ -14,6 +14,8 @@ import { ProjectProvider } from "../components/context/ProjectContextWrapper"
 export default function DashboardLayout({ children, }: { children: React.ReactNode }) {
   const [sideMenuActive, setSideMenu] = useState<boolean>(true);
   const { data: session } = useSession();
+  console.log(session);
+  
   if (!session) {
     redirect('/login')
   }

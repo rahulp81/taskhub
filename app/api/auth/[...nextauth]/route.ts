@@ -48,41 +48,31 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async session({ session }) {
-      if (
-        typeof session.user !== "undefined" &&
-        !isEqual(cacheUser, session.user)
-      ) {
-        try {
-          await dbConnect();
-          const existingUser = await User.findOne({
-            email: session.user.email,
+    async signIn({ user, account, profile, email }) {
+      try {
+        await dbConnect();
+        const email = user.email || profile?.email;
+        const existingUser = await User.findOne({ email });
+        if (!existingUser) {
+          // If user doesn't exist, create a new one
+          const newUser = new User({
+            email,
+            name: user.name,
+            image: user.image,
           });
-          if (!existingUser) {
-            const user = await User.create({
-              email: session.user.email,
-              name: session.user.name,
-              image: session.user.image,
-            });
-          } else {
-            const updatedUserData = {
-              name: session.user.name,
-              image: session.user.image,
-            };
-            const u = await User.findOneAndUpdate(
-              { email: session.user.email },
-              updatedUserData
-            );
-          }
-          cacheUser = session.user;
-        } catch (error) {
-          console.log(error);
+          await newUser.save();
+        } else {
+          // If user exists, update their image (and other fields if needed)
+          console.log(existingUser);
+          existingUser.name = user.name;
+          existingUser.image = user.image;
+          await existingUser.save();
         }
-      } else {
-        console.log("same session no DB");
+      } catch (error) {
+        console.log(error);
       }
-      return session;
-    },
+      return true; // Return true to allow the sign-in to proceed
+    }
   },
   session: {
     strategy: "jwt",

@@ -30,7 +30,7 @@ function DueDate({ dueDate, setDueDate }: DueDateProps) {
                              selected={dueDate}
                              onChange={(date) => setDueDate(date as Date)}
                              isClearable
-                             placeholderText=" Set Due Date"
+                             placeholderText="Set Due Date"
                              minDate={new Date()}
                              dateFormat="dd/MM/yyyy"
                  />

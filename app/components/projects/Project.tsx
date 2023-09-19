@@ -19,9 +19,12 @@ function Project({ taskProject, setTaskProject }: { taskProject: string | null, 
     // <span className='ml-auto'>&#10004;</span>
 
     function handleCreateLabel() {
-        const updatedProjects = projects;
-        updatedProjects?.push(projectSearch)
-        setProjects(updatedProjects)
+        setProjects((prevProjects) => {
+            const existingProjects = prevProjects || [];
+            const updatedProjects = [...existingProjects, projectSearch];
+            return updatedProjects;
+        });
+
         setTaskProject(projectSearch)
         // setIsActive(true);
         setProjectSearch('')

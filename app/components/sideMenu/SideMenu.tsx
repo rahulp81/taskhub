@@ -15,7 +15,7 @@ function SideMenu({ active }: { active: boolean }) {
     return (
         <section
             className={`flex  flex-col gap-10 side-menu min-h-full w-[275px] bg-[#fafafa] px-6 pt-8 side-menu
-             group transform transition-transform duration-500 ease-in-out ${active ? 'translate-x-0 ' : '-translate-x-[300%]  '
+              transform transition-transform duration-500 ease-in-out ${active ? 'translate-x-0 ' : '-translate-x-[300%]  '
                 }`}
         >
             <nav className='flex flex-col gap-1 '>

@@ -73,7 +73,7 @@ export default function Task({ task }: TaskProps) {
       }
     }
     updateTask(updatedTasks);
-    const form = e.currentTarget as HTMLFormElement;
+    // const form = e.currentTarget as HTMLFormElement;
     setIsEditing(!isEditing)
   }
 
@@ -91,7 +91,7 @@ export default function Task({ task }: TaskProps) {
           key={task.id}
           className="border-b-[1px] flex px-2.5 py-2.5 justify-between cursor-pointer group relative" >
           <div className="flex gap-2.5 relative">
-            {/* <span className="absolute -top-[2px] -left-[33px] opacity-0 group-hover:opacity-100 rounded hover:bg-slate-100 cursor-move p-[2px]">
+            {/* Drag feature <span className="absolute -top-[2px] -left-[33px] opacity-0 group-hover:opacity-100 rounded hover:bg-slate-100 cursor-move p-[2px]">
           <Image src={'/icons/drag.svg'} alt="drag" height={20} width={20} />
         </span> */}
             <button className={`done | w-[20px] h-[20px] border-[1.5px]  p-1 rounded-full flex items-center hover:bg-slate-100
@@ -164,7 +164,7 @@ export default function Task({ task }: TaskProps) {
                   <button type='button' className=' py-1 px-1 flex max-w-fit  rounded  self-end hover:bg-blue-50' >
                     <div className='flex  items-center gap-2'>
                       <span className='text-black text-sm'>{taskProject}</span>
-                      <span className='min-h-[12px] min-w-[12px] bg-cyan-800 rounded-full'></span>
+                      <span className='min-h-[12px] min-w-[12px] bg-stone-400 rounded-full'></span>
                     </div>
                   </button>
                 )
