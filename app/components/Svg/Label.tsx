@@ -74,14 +74,14 @@ function Label({ setLabels, labels }: { labels: string[] | null, setLabels: Reac
             {
                 active &&
                 <div className='bg-white absolute -left-[10%]  rounded shadow border-[1px] min-w-[200px] z-50 ' ref={dropdownRef}>
-                    <ul className="flex flex-col w-full overflow-y-scroll max-h-[200px]">
-                        <input
+                     <input
                             type="text"
                             className="w-full px-2 text-base pb-1.5 border-b-[1px]"
                             placeholder="Type a label"
                             value={tagsSearch}
                             onChange={(e) => setTagsSearch(e.target.value)}
                         />
+                    <ul className="flex flex-col w-full overflow-y-scroll max-h-[200px]">
                         {filteredLabels?.map((label) => (
                             <li
                                 key={label}
