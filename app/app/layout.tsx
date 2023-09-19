@@ -10,12 +10,13 @@ import SideMenuContext from "../components/context/sideMenuContext"
 import TaskContextProvider from "../components/context/TasksContext"
 import { TagsProvider } from "../components/context/TagsContext"
 import { ProjectProvider } from "../components/context/ProjectContextWrapper"
+import { FavouriteProvider } from "../components/context/FavouriteContextWrapper"
 
 export default function DashboardLayout({ children, }: { children: React.ReactNode }) {
   const [sideMenuActive, setSideMenu] = useState<boolean>(true);
   const { data: session } = useSession();
   console.log(session);
-  
+
   if (!session) {
     redirect('/login')
   }
@@ -69,10 +70,12 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
             <TaskContextProvider>
               <TagsProvider >
                 <ProjectProvider>
-                  {/* Components */}
-                  <SideMenu active={sideMenuActive} />
-                  {children}
-                  {/* Components */}
+                  <FavouriteProvider>
+                    {/* Components */}
+                    <SideMenu active={sideMenuActive} />
+                    {children}
+                    {/* Components */}
+                  </FavouriteProvider>
                 </ProjectProvider>
               </TagsProvider>
             </TaskContextProvider>
