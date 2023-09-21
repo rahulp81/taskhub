@@ -1,4 +1,4 @@
-import UseClickOutside from "@/app/app/hooks/UseClickOutside";
+import UseClickOutside from "@/app/components/hooks/UseClickOutside";
 import { useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 

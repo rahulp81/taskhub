@@ -1,4 +1,4 @@
-import UseClickOutside from '@/app/app/hooks/UseClickOutside'
+import UseClickOutside from '@/app/components/hooks/UseClickOutside'
 import React, { useContext, useRef, useState } from 'react'
 import { useTagsContext } from '../context/TagsContext';
 

@@ -56,7 +56,7 @@ function addTask() {
 
   return (
     (!editing) ?
-      (<button className="flex gap-2 text-sm items-center text-gray-500 group py-1 w-full" onClick={() => { setEditing(!editing) }}>
+      (<button className="flex gap-2 text-sm items-center text-gray-500 group pt-3 pb-20 w-full" onClick={() => { setEditing(!editing) }}>
         <span className='rounded-full group-hover:bg-[#3b82f6]'>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={22} height={22} className='fill-[#3b82f6] group-hover:fill-[white]'>
             <path

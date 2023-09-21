@@ -85,9 +85,9 @@ function Board() {
 
                             return (
                                 <li key={p} className='group p-1 relative pr-2 pl-3 flex justify-between rounded hover:bg-blue-50 hover:cursor-pointer'>
-                                    <div className='flex items-center max-w-[130px]'>
+                                    <div className='flex items-center break-normal max-w-[130px]'>
                                         <span className='min-h-[12px] min-w-[12px] bg-cyan-800 rounded-full'></span>
-                                        <span className='text-black text-sm ml-2'>{p}</span>
+                                        <span className='text-black text-sm ml-2  break-all'>{p}</span>
                                     </div>
                                     <span className='text-xs peer text-gray-500'>
                                         {noOfProjectInstances > 0 && (

@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from 'react'
 import { useProjectContext } from '../context/ProjectContextWrapper';
-import UseClickOutside from '@/app/app/hooks/UseClickOutside';
+import UseClickOutside from '@/app/components/hooks/UseClickOutside';
 
 function Project({ taskProject, setTaskProject }: { taskProject: string | null, setTaskProject: React.Dispatch<React.SetStateAction<string | null>> }) {
     const [active, setIsActive] = useState(false);

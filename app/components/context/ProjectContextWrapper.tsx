@@ -19,7 +19,6 @@ export function useProjectContext(){
 
 export function ProjectProvider({children}:  {children : React.ReactNode}) {
   const[projects,setProjects] = useState<string[] | null>([]);
-  console.log('projects are',projects);
   return (
     <ProjectContext.Provider value= {{projects, setProjects}}>
       {children}
