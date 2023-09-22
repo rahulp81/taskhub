@@ -11,7 +11,6 @@ import { TaskContext } from "@/app/components/context/taskContext"
 import Task from "@/app/components/addTask/Task"
 
 function Today() {
-  const { data: session } = useSession();
   const tasks = useContext(TaskContext);
   const sideMenuAtive = useContext(sideMenuContext);
   console.log(tasks);

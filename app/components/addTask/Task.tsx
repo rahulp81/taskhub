@@ -31,20 +31,20 @@ export default function Task({ task }: TaskProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
-  console.log('label is',labels);
+  console.log('label is', labels);
 
   // For Editor
   const [name, setName] = useState(task.name);
   const [description, setDescription] = useState(task.description);
 
   const currentLabels =
-    <div className='gap-1 flex'>
+    <span className='gap-1 flex'>
       {updatedLabels?.map((label, index) => (
         <span className='bg-blue-100 rounded px-1' key={index}>
           #{label}
         </span>
       ))}
-    </div>
+    </span>
 
 
   const date = task.due as Date;
@@ -133,7 +133,8 @@ export default function Task({ task }: TaskProps) {
                       <svg xmlns="http://www.w3.org/2000/svg" width={12} height={12} viewBox="0 0 24 24" className={'fill-gray-500'}>
                         <path d="M10.9042 2.1001L20.8037 3.51431L22.2179 13.4138L13.0255 22.6062C12.6350 22.9967 12.0019 22.9967 11.6113 22.6062L1.71184 12.7067C1.32131 12.3162 1.32131 11.683 1.71184 11.2925L10.9042 2.1001ZM11.6113 4.22142L3.83316 11.9996L12.3184 20.4849L20.0966 12.7067L19.0360 5.28208L11.6113 4.22142ZM13.7327 10.5854C12.9516 9.80433 12.9516 8.5380 13.7327 7.75695C14.5137 6.9759 15.7800 6.9759 16.5611 7.75695C17.3421 8.5380 17.3421 9.80433 16.5611 10.5854C15.7800 11.3664 14.5137 11.3664 13.7327 10.5854Z"></path>
                       </svg>
-                      {l}</Link>
+                      {l}
+                    </Link>
                   ))}
                 </span>
 
@@ -183,7 +184,7 @@ export default function Task({ task }: TaskProps) {
 
           </div>
         </li>
-        <DeleteDialog openModal={modalOpen} setOpenModal={setModalOpen} deleteTask={deleteTask} />
+        <DeleteDialog taskName={task.name as string} openModal={modalOpen} setOpenModal={setModalOpen} deleteTask={deleteTask} />
       </>
     ) :
     (

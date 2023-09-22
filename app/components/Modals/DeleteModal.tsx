@@ -3,8 +3,8 @@ import React from 'react';
 import Dialog from '@mui/material/Dialog';
 
 
-export default function DeleteDialog({openModal,setOpenModal,deleteTask}
-    : {openModal:boolean, setOpenModal:  React.Dispatch<React.SetStateAction<boolean>>,deleteTask: ()=> void }
+export default function DeleteDialog({openModal,setOpenModal,deleteTask, taskName }
+    : {openModal:boolean, setOpenModal:  React.Dispatch<React.SetStateAction<boolean>>,deleteTask: ()=> void , taskName: string }
     ) {
 
     const customDialogStyle = {
@@ -38,7 +38,7 @@ export default function DeleteDialog({openModal,setOpenModal,deleteTask}
                         </div>
                     </header>
                     <main className='grow flex flex-col justify-between'>
-                        <p>Are you sure you want to delete <span className='font-bold'>Task</span>?</p>
+                        <p>Are you sure you want to delete <span className='font-bold'>{taskName}</span>?</p>
                         <div className='self-end flex gap-4'>
                             <button className=' text-sm font-semibold  px-4 py-2 rounded bg-stone-100 hover:bg-stone-300' onClick={()=> setOpenModal(false)}>
                                 Cancel
