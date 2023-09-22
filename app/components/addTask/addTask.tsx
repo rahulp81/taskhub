@@ -21,7 +21,7 @@ function addTask() {
   const currentLabels =
     <div className='gap-1 flex'>
       {labels?.map((label, index) => (
-        <span className='bg-blue-100 rounded p-1' key={index}>
+        <span className='bg-blue-100 rounded px-1' key={index}>
           #{label}
         </span>
       ))}
@@ -35,14 +35,13 @@ function addTask() {
     const id = Date.now() as number;
     const priority = taskPriority;
     const due = dueDate;
-    const label = labels;
     const project = taskproject;
-    const taskDetail = { name, description, id, priority, due, label, project };
+    const taskDetail = { name, description, id, priority, due, labels : labels, project };
     setTask((prevTasks) => [...prevTasks, taskDetail]);
     const form = e.currentTarget as HTMLFormElement;
     setTaskPriority('P4');
     setDueDate(null);
-    setLabels([]);
+    setLabels(labels);
     setTaskProject('Inbox')
     form.reset();
     setName('');

@@ -22,7 +22,7 @@ export default function Task({ task }: TaskProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [dueDate, setDueDate] = useState<Date | null>(task.due as Date)
   const [priority, setPriority] = useState(task.priority as string)
-  const [labels, setLabels] = useState<string[] | null>(task.label as string[])
+  const [labels, setLabels] = useState<string[] | null>(task.labels as string[])
   const [taskProject, setTaskProject] = useState<string | null>(task.project || null)
   const [updatedPriority, setUpdatedPriority] = useState(priority);
   const [updatedDueDate, setUpdatedDueDate] = useState<Date | null>(dueDate as Date)  //
@@ -31,9 +31,20 @@ export default function Task({ task }: TaskProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
+  console.log('label is',labels);
+
   // For Editor
   const [name, setName] = useState(task.name);
   const [description, setDescription] = useState(task.description);
+
+  const currentLabels =
+    <div className='gap-1 flex'>
+      {updatedLabels?.map((label, index) => (
+        <span className='bg-blue-100 rounded px-1' key={index}>
+          #{label}
+        </span>
+      ))}
+    </div>
 
 
   const date = task.due as Date;
@@ -180,7 +191,11 @@ export default function Task({ task }: TaskProps) {
         // onClick={() => {setEditing(!editing)}}
         <form className='border-[1px] rounded-lg flex flex-col  border-gray-400' onSubmit={editTask}>
           <div className='gap-2 flex flex-col px-3 py-2'>
-            <input type="text" value={name as string} onChange={(e) => { setName(e.target.value) }} name='task-name' placeholder='Task Name' className='placeholder:font-medium font-medium' />
+            <div className='flex  justify-between pr-5 '>
+              <input type="text" name='task-name' placeholder='Task Name' className='grow placeholder:font-medium font-medium'
+                value={`${name}`} onChange={(e) => { setName(e.target.value) }} />
+              <p>{currentLabels}</p>
+            </div>
             <input type="text" value={description as string} onChange={(e) => { setDescription(e.target.value) }} name='task-description' placeholder='Description' className='placeholder:font-normal ml-0.5 text-[14px] placeholder:text-sm ' />
           </div>
           <div className='flex gap-2.5 px-3 pt-1.5 pb-4 flex-wrap '>
@@ -197,6 +212,7 @@ export default function Task({ task }: TaskProps) {
                 setUpdatedDueDate(dueDate);
                 setUpdatedLabels(labels);
                 setUpdatedTaskProject(taskProject);
+                setName(task.name)
               }}>
                 Cancel
               </button>
