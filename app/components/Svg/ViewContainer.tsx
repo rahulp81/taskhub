@@ -9,7 +9,7 @@ function ViewContainer() {
                     </path>
                 </svg>
             </span>
-            <span className='text-sm text-gray-600 font-medium group-hover:text-black'>View</span>
+            <span className='text-sm text-gray-600 font-medium group-hover:text-black'>Sort</span>
         </button>
     )
 }

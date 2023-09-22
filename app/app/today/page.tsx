@@ -15,6 +15,8 @@ function Today() {
   const tasks = useContext(TaskContext);
   const sideMenuAtive = useContext(sideMenuContext);
   console.log(tasks);
+
+  const todaysTasks = tasks.filter((task)=> task.due?.toDateString() == new Date().toDateString() )
   return (
     <div className={`grow  flex justify-center  transition-all duration-[500ms] ease-in-out ${sideMenuAtive ? '' : 'min-[800px]:ml-[-275px]'}`}>
 
@@ -27,7 +29,7 @@ function Today() {
         </div>
         <div className="flex flex-col w-full gap-2 ">
           <ul>
-            {tasks.map((task) => (
+            {todaysTasks.map((task) => (
               <Task key={task.id} task={task}/>
             ))}
           </ul>

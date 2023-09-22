@@ -46,6 +46,7 @@ function addTask() {
     setTaskProject('Inbox')
     form.reset();
     setName('');
+    setEditing(!editing);
   }
 
   function cancelTask() {
