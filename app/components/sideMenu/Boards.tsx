@@ -6,7 +6,6 @@ import CreateProjectDialog from '../Modals/CreatePorjectModal';
 import { useFavouriteContext } from '../context/FavouriteContextWrapper';
 import { TaskContext } from '../context/taskContext';
 
-
 interface Favourite {
     type: 'project' | 'label' | 'filter';
     name: string
@@ -49,7 +48,24 @@ function Board() {
         }
     }
 
+    function handleDeleteProject() {
+
+    }
+
+
     function createProject({ name, checked }: { name: string, checked: boolean }) {
+        if (checked) {
+            setFavourite((prevFav) => {
+                const currentFav = prevFav || [];
+                const newFav: Favourite = {
+                    type: 'project',
+                    name: name,
+                }
+                console.log(currentFav);
+                const updatedFav = [...currentFav, newFav]
+                return updatedFav
+            })
+        }
         setProjects((prevProjects) => {
             const existingProject = prevProjects || [];
             const updatedProjects = [...existingProject, name];
@@ -126,7 +142,7 @@ function Board() {
                                                         )}
                                                     </div>
                                                 </button>
-                                                <button className="rounded hover:bg-slate-200 p-1">
+                                                <button className="rounded hover:bg-slate-200 p-1 " onClick={() => handleDeleteProject()} >
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#000000" fill="none" strokeLinecap="round" strokeLinejoin="round">
                                                         <path stroke="none" d="M0 0h24v24H0z" fill="" />
                                                         <path d="M4 7l16 0" />
@@ -147,7 +163,7 @@ function Board() {
                 </ul>
             )
             }
-            <CreateProjectDialog openModal={openModal} setOpenModal={setOpenModal} createProject={createProject} />
+            <CreateProjectDialog openModal={openModal} setOpenModal={setOpenModal} createProject={createProject} projects={projects as string[]} />
         </section >
     );
 }

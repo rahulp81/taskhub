@@ -11,14 +11,21 @@ import Project from '../projects/Project';
 function addTask() {
   const [editing, setEditing] = useState(false)
   const [taskPriority, setTaskPriority] = useState('P4');
-  const [name,setName] = useState('');
+  const [name, setName] = useState('');
   const formRef = useRef<HTMLFormElement>(null);
-  const [dueDate,setDueDate] = useState<Date | null>(null)
-  const [labels,setLabels] = useState<string[] | null>([])
-  const [taskproject,setTaskProject] = useState<string | null>('Inbox')
+  const [dueDate, setDueDate] = useState<Date | null>(null)
+  const [labels, setLabels] = useState<string[] | null>([])
+  const [taskproject, setTaskProject] = useState<string | null>('Inbox')
 
   const setTask = useContext(SetTaskContext);
-
+  const currentLabels =
+    <div className='gap-1 flex'>
+      {labels?.map((label, index) => (
+        <span className='bg-blue-100 rounded p-1' key={index}>
+          #{label}
+        </span>
+      ))}
+    </div>
 
   function createTask(e: FormEvent) {
     e.preventDefault();
@@ -27,10 +34,10 @@ function addTask() {
     const description = formData.get('task-description') as string | null;
     const id = Date.now() as number;
     const priority = taskPriority;
-    const due =dueDate;
+    const due = dueDate;
     const label = labels;
     const project = taskproject;
-    const taskDetail = { name, description, id,priority,due,label,project};
+    const taskDetail = { name, description, id, priority, due, label, project };
     setTask((prevTasks) => [...prevTasks, taskDetail]);
     const form = e.currentTarget as HTMLFormElement;
     setTaskPriority('P4');
@@ -41,8 +48,8 @@ function addTask() {
     setName('');
   }
 
-  function cancelTask(){
-    if(formRef.current){
+  function cancelTask() {
+    if (formRef.current) {
       setEditing(!editing);
       setTaskPriority('P4');
       setDueDate(null);
@@ -73,14 +80,18 @@ function addTask() {
         // onClick={() => {setEditing(!editing)}}
         <form className='border-[1px] rounded-lg flex flex-col  border-gray-400' onSubmit={createTask} ref={formRef}>
           <div className='gap-2 flex flex-col px-3 py-2'>
-            <input type="text" name='task-name' placeholder='Task Name' className='placeholder:font-medium font-medium'
-             value={name} onChange={(e) => {setName(e.target.value)} } />
+            <div className='flex  justify-between pr-5 '>
+              <input type="text" name='task-name' placeholder='Task Name' className='grow placeholder:font-medium font-medium'
+                value={`${name}`} onChange={(e) => { setName(e.target.value) }} />
+              <p>{currentLabels}</p>
+            </div>
+
             <input type="text" name='task-description' placeholder='Description' className='placeholder:font-normal ml-0.5 text-[14px] placeholder:text-sm ' />
           </div>
           <div className='flex gap-3 px-3 mt-1.5 mb-4 relative flex-wrap'>
             <DueDate dueDate={dueDate} setDueDate={setDueDate} />
             <Priority setPriority={setTaskPriority} priority={taskPriority} />
-            <Label setLabels ={setLabels} labels ={labels} />
+            <Label setLabels={setLabels} labels={labels} />
           </div>
           <div className='border-t-[1px] px-3 py-2 flex justify-between'>
             <Project setTaskProject={setTaskProject} taskProject={taskproject} />
@@ -88,7 +99,7 @@ function addTask() {
               <button type='button' className='text-sm py-1.5  px-3 rounded font-semibold bg-zinc-100 hover:bg-zinc-200' onClick={cancelTask}>
                 Cancel
               </button>
-              <button type='submit' disabled={(name) ? false : true } className={`${name ? 'bg-blue-500 hover:bg-blue-600 ' : 'bg-blue-200 cursor-not-allowed ' }  text-sm px-3 py-1.5 rounded font-semibold  text-white `}>
+              <button type='submit' disabled={(name) ? false : true} className={`${name ? 'bg-blue-500 hover:bg-blue-600 ' : 'bg-blue-200 cursor-not-allowed '}  text-sm px-3 py-1.5 rounded font-semibold  text-white `}>
                 Add task
               </button>
             </div>

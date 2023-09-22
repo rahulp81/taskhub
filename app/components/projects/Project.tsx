@@ -18,7 +18,7 @@ function Project({ taskProject, setTaskProject }: { taskProject: string | null, 
     console.log(taskProject);
     // <span className='ml-auto'>&#10004;</span>
 
-    function handleCreateLabel() {
+    function handleCreateProject() {
         setProjects((prevProjects) => {
             const existingProjects = prevProjects || [];
             const updatedProjects = [...existingProjects, projectSearch];
@@ -93,7 +93,7 @@ function Project({ taskProject, setTaskProject }: { taskProject: string | null, 
                             // ref={additionalRef}
                             type='button'
                             className="mt-0.5 font-bold text-sm py-1  px-2 w-full hover:bg-blue-50"
-                            onClick={handleCreateLabel}
+                            onClick={handleCreateProject}
                         >
                             + Create <span className='font-bold'>{projectSearch}</span>
                         </button>

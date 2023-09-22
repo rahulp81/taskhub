@@ -7,12 +7,17 @@ import { FormControlLabel } from '@mui/material';
 const label = { inputProps: { 'aria-label': 'Color switch demo' } };
 
 
-export default function CreateProjectDialog({ openModal, setOpenModal, createProject }
-    : { openModal: boolean, setOpenModal: React.Dispatch<React.SetStateAction<boolean>>, createProject: (data: { name: string, checked: boolean }) => void }
+export default function CreateProjectDialog({ openModal, setOpenModal, createProject, projects }
+    : {
+        openModal: boolean, setOpenModal: React.Dispatch<React.SetStateAction<boolean>>,
+        createProject: (data: { name: string, checked: boolean }) => void,
+        projects: string[]
+    }
 ) {
 
     const [checked, setChecked] = useState(false);
     const [name, setName] = useState('')
+    const [error, setError] = useState<string>('')
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setChecked(event.target.checked);
@@ -40,12 +45,18 @@ export default function CreateProjectDialog({ openModal, setOpenModal, createPro
                     }
                 }}
             >
-                <form className='sm:w-[400px] gap-5 flex  flex-col' >
+                <form className='sm:w-[400px] gap-4 flex  flex-col' >
                     <h1 className='text-xl py-2 px-3 border-b-[1px] font-extrabold'>Add a Project</h1>
                     <div className='flex flex-col  gap-3 '>
-                        <label className='flex flex-col px-3 gap-1' htmlFor="name">
-                            <h2 className='font-bold  '>Name</h2>
-                            <input id='name' className='border-[1px] border-stone-300 px-1 py-1 rounded' type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                        <label className='flex flex-col relative px-3 gap-1' htmlFor="name">
+                        {error ? <p className=' text-red-500  font-medium'>{error}</p> : null}
+                            <h2 className='font-bold  '>Name
+                            </h2>
+                            <input id='name' className='border-[1px] border-stone-300 px-1 py-1 rounded' type="text" value={name}
+                                onChange={(e) => {
+                                    setName(e.target.value);
+                                    setError('');
+                                }} />
                         </label>
                         <div className='px-3'>
                             <FormControlLabel
@@ -70,13 +81,23 @@ export default function CreateProjectDialog({ openModal, setOpenModal, createPro
                                     }}>
                                     Cancel
                                 </button>
-                                <button type='button' className='text-white text-sm font-semibold  px-4 py-2 rounded bg-blue-500 hover:bg-blue-700'
+                                <button
+                                    type='button'
+                                    className='text-white text-sm font-semibold px-4 py-2 rounded bg-blue-500 hover:bg-blue-700'
                                     onClick={() => {
-                                        createProject({ name, checked })
-                                        setOpenModal(false);
+                                        // Check if a project with the same name already exists
+                                        const isProjectExists = projects.includes(name);
+
+                                        if (!isProjectExists) {
+                                            createProject({ name, checked });
+                                            setOpenModal(false);
+                                        } else {
+                                            setError('A project with the same name already exists!.');
+                                        }
                                     }}>
                                     Add Project
                                 </button>
+
                             </div>
 
                         </div>
