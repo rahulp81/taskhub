@@ -14,14 +14,14 @@ interface Favourite {
 }
 
 
-export default function CreateLabelDialog({ openModal, setOpenModal, createLabel }
-    : { openModal: boolean, setOpenModal: React.Dispatch<React.SetStateAction<boolean>>, createLabel: React.Dispatch<React.SetStateAction<string[] | null>> }) {
+export default function CreateLabelDialog({ openModal, setOpenModal }
+    : { openModal: boolean, setOpenModal: React.Dispatch<React.SetStateAction<boolean>> }) {
 
     const [checked, setChecked] = useState(false);
     const [name, setName] = useState('')
     const { tags, setTags } = useTagsContext();
-    const[error,setError] = useState('');
-    const {favourite,setFavourite} = useFavouriteContext();
+    const [error, setError] = useState('');
+    const { favourite, setFavourite } = useFavouriteContext();
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setChecked(event.target.checked);
@@ -38,7 +38,11 @@ export default function CreateLabelDialog({ openModal, setOpenModal, createLabel
         <div>
             <Dialog
                 open={openModal}
-                onClose={() => setOpenModal(false)}
+                onClose={() => {
+                    setName('');
+                    setError('');
+                    setOpenModal(false);
+                }}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
                 PaperProps={{
@@ -46,7 +50,7 @@ export default function CreateLabelDialog({ openModal, setOpenModal, createLabel
                 }}
                 onKeyDown={(e) => {
                     if (e.key === 'Enter') {
-                        e.preventDefault(); 
+                        e.preventDefault();
                     }
                 }}
             >
@@ -54,9 +58,13 @@ export default function CreateLabelDialog({ openModal, setOpenModal, createLabel
                     <h1 className='text-xl py-2 px-3 border-b-[1px] font-extrabold'>Add Label</h1>
                     <div className='flex flex-col  gap-3 '>
                         <label className='flex flex-col px-3 gap-1' htmlFor="name">
-                        {error ? <p className=' text-red-500  font-medium'>{error}</p> : null}
+                            {error ? <p className=' text-red-500  font-medium'>{error}</p> : null}
                             <h2 className='font-bold  '>Name</h2>
-                            <input id='name' className='border-[1px] border-stone-300 px-1 py-1 rounded' type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                            <input id='name' className='border-[1px] border-stone-300 px-1 py-1 rounded' type="text" value={name}
+                                onChange={(e) => {
+                                    setError('');
+                                    setName(e.target.value)
+                                }} />
                         </label>
                         <div className='px-3'>
                             <FormControlLabel
@@ -77,6 +85,7 @@ export default function CreateLabelDialog({ openModal, setOpenModal, createLabel
                                     onClick={() => {
                                         setOpenModal(false);
                                         setName('');
+                                        setError('')
                                     }}>
                                     Cancel
                                 </button>
@@ -86,11 +95,11 @@ export default function CreateLabelDialog({ openModal, setOpenModal, createLabel
                                         const labelExists = tags?.includes(name);
 
                                         if (!labelExists) {
-                                            setTags((prevTags)=> {
+                                            setTags((prevTags) => {
                                                 const prevLabels = prevTags || [];
-                                                const updatedTags = [...prevLabels,name]
+                                                const updatedTags = [...prevLabels, name]
                                                 return updatedTags;
-                                            } )
+                                            })
                                             if (checked) {
                                                 setFavourite((prevFav) => {
                                                     const currentFav = prevFav || [];
@@ -101,11 +110,12 @@ export default function CreateLabelDialog({ openModal, setOpenModal, createLabel
                                                     const updatedFav = [...currentFav, newFav]
                                                     return updatedFav
                                                 })
+                                            }
                                             setOpenModal(false);
                                         } else {
                                             setError('A Label with same name already exists!.');
                                         }
-                                    }}}>
+                                    }}>
                                     Create Label
                                 </button>
                             </div>

@@ -24,7 +24,6 @@ export function useFavouriteContext(){
 
 export function FavouriteProvider({children}:  {children : React.ReactNode}) {
   const[favourite,setFavourite] = useState<favouriteType[] | null>([]);
-  console.log('favourites  are',favourite);
   return (
     <FavouriteContext.Provider value= {{favourite, setFavourite}}>
       {children}

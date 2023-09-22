@@ -4,7 +4,8 @@ import { useProjectContext } from '../context/ProjectContextWrapper';
 import { getProjectInstaces } from "../../lib/getInstaces";
 import CreateProjectDialog from '../Modals/CreatePorjectModal';
 import { useFavouriteContext } from '../context/FavouriteContextWrapper';
-import { TaskContext } from '../context/taskContext';
+import { SetTaskContext, TaskContext } from '../context/taskContext';
+import DeleteProjectDialog from '../Modals/DeleteProjectModal';
 
 interface Favourite {
     type: 'project' | 'label' | 'filter';
@@ -15,8 +16,10 @@ function Board() {
     const [isActive, setIsActive] = useState(false);
     const { projects, setProjects } = useProjectContext();
     const [openModal, setOpenModal] = useState(false);
+    const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const { favourite, setFavourite } = useFavouriteContext();
     const tasks = useContext(TaskContext);
+    const setTasks = useContext(SetTaskContext)
 
     function isProjectInFavorites(project: string, favorites: Favourite[] | null) {
         return favorites?.some((favorite) => favorite.type === 'project' && favorite.name === project);
@@ -25,6 +28,7 @@ function Board() {
     const togglesetIsActive = () => {
         setIsActive(!isActive);
     };
+
 
     function handleFav(isFavorite: boolean, project: string) {
         if (isFavorite == true) {
@@ -48,9 +52,42 @@ function Board() {
         }
     }
 
-    function handleDeleteProject() {
+    function handleDeleteProject(projectName: string) {
+        // Remove the project from the 'projects' state
+        setProjects((prevProjects) => {
+            if (prevProjects) {
+                const updatedProjects = prevProjects.filter(
+                    (project) => project !== projectName
+                );
+                return updatedProjects;
+            }
+            return prevProjects;
+        });
 
+        // Remove the project from the 'favorites' state
+        setFavourite((prevFav) => {
+            if (prevFav) {
+                const updatedFav = prevFav.filter(
+                    (fav) => fav.type !== 'project' || fav.name !== projectName
+                );
+                return updatedFav;
+            }
+            return prevFav;
+        });
+
+        // Remove tasks associated with the deleted project
+        setTasks((prevTasks) => {
+            if (prevTasks) {
+                const updatedTasks = prevTasks.filter(
+                    (task) => task.project !== projectName
+                );
+                return updatedTasks;
+            }
+            return prevTasks;
+        });
     }
+
+
 
 
     function createProject({ name, checked }: { name: string, checked: boolean }) {
@@ -94,10 +131,9 @@ function Board() {
             {isActive && (
                 <ul className='flex flex-col gap-1'>
                     {
-                        projects?.map((p, index) => {
+                        projects?.map((p) => {
                             const isFavorite = isProjectInFavorites(p, favourite);
                             const noOfProjectInstances = tasks.filter((t) => t.project === p).length;
-
 
                             return (
                                 <li key={p} className='group p-1 relative pr-2 pl-3 flex justify-between rounded hover:bg-blue-50 hover:cursor-pointer'>
@@ -107,23 +143,13 @@ function Board() {
                                     </div>
                                     <span className='text-xs peer text-gray-500'>
                                         {noOfProjectInstances > 0 && (
-                                            <span className='absolute right-0 pr-2 group-hover:hidden'>
+                                            <span className='absolute right-0 pr-3 group-hover:hidden'>
                                                 {noOfProjectInstances}
                                             </span>
                                         )}
                                         <span className='group-hover:opacity-100 opacity-0 transition-opacity duration-250'>
                                             <div className="flex gap-0.5">
-                                                <button className="rounded hover:bg-slate-200 p-1">
-                                                    <div className="">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#000000" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                                                            <path stroke="none" d="M0 0h24v24H0z" fill="" />
-                                                            <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-                                                            <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
-                                                            <path d="M16 5l3 3" />
-                                                        </svg>
-                                                    </div>
-                                                </button>
-                                                <button className="rounded hover-bg-slate-200 p-1"
+                                                <button className="rounded hover:bg-slate-200  p-1"
                                                     onClick={() => {
                                                         handleFav(isFavorite as boolean, p)
                                                     }}>
@@ -142,7 +168,7 @@ function Board() {
                                                         )}
                                                     </div>
                                                 </button>
-                                                <button className="rounded hover:bg-slate-200 p-1 " onClick={() => handleDeleteProject()} >
+                                                <button className="rounded hover:bg-slate-200 p-1 " onClick={() => setOpenDeleteModal(true)} >
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#000000" fill="none" strokeLinecap="round" strokeLinejoin="round">
                                                         <path stroke="none" d="M0 0h24v24H0z" fill="" />
                                                         <path d="M4 7l16 0" />
@@ -152,9 +178,11 @@ function Board() {
                                                         <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
                                                     </svg>
                                                 </button>
+                                                <DeleteProjectDialog openModal={openDeleteModal} setOpenModal={setOpenDeleteModal} deleteTask={handleDeleteProject} p={p} />
                                             </div>
                                         </span>
                                     </span>
+
                                 </li>
                             );
                         })
@@ -164,6 +192,8 @@ function Board() {
             )
             }
             <CreateProjectDialog openModal={openModal} setOpenModal={setOpenModal} createProject={createProject} projects={projects as string[]} />
+
+
         </section >
     );
 }

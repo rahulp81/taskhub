@@ -33,7 +33,10 @@ export default function CreateProjectDialog({ openModal, setOpenModal, createPro
         <div>
             <Dialog
                 open={openModal}
-                onClose={() => setOpenModal(false)}
+                onClose={() => {
+                    setName('')
+                    setError('')
+                    setOpenModal(false)}}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
                 PaperProps={{
@@ -44,6 +47,7 @@ export default function CreateProjectDialog({ openModal, setOpenModal, createPro
                         e.preventDefault(); // Prevent Enter from submitting
                     }
                 }}
+
             >
                 <form className='sm:w-[400px] gap-4 flex  flex-col' >
                     <h1 className='text-xl py-2 px-3 border-b-[1px] font-extrabold'>Add a Project</h1>
@@ -77,6 +81,7 @@ export default function CreateProjectDialog({ openModal, setOpenModal, createPro
                                     onClick={() => {
                                         setOpenModal(false);
                                         setChecked(false);
+                                        setError('');
                                         setName('');
                                     }}>
                                     Cancel
@@ -90,6 +95,7 @@ export default function CreateProjectDialog({ openModal, setOpenModal, createPro
 
                                         if (!isProjectExists) {
                                             createProject({ name, checked });
+                                            setName('')
                                             setOpenModal(false);
                                         } else {
                                             setError('A project with the same name already exists!.');

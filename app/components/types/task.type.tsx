@@ -4,7 +4,7 @@
     description?: string | null;
     priority?:string | null | undefined;
     due?: Date | null;
-    labels?: string[];
+    labels?: string[] | null;
     project?:string | null,
     // Add any other properties you need
   };

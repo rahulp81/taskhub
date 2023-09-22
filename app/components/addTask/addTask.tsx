@@ -19,13 +19,13 @@ function addTask() {
 
   const setTask = useContext(SetTaskContext);
   const currentLabels =
-    <div className='gap-1 flex'>
+    <span className='gap-1 flex'>
       {labels?.map((label, index) => (
         <span className='bg-blue-100 rounded px-1' key={index}>
           #{label}
         </span>
       ))}
-    </div>
+    </span>
 
   function createTask(e: FormEvent) {
     e.preventDefault();
@@ -36,7 +36,8 @@ function addTask() {
     const priority = taskPriority;
     const due = dueDate;
     const project = taskproject;
-    const taskDetail = { name, description, id, priority, due, labels : labels, project };
+    const tags = labels || [];
+    const taskDetail = { name, description, id, priority, due, labels : tags, project };
     setTask((prevTasks) => [...prevTasks, taskDetail]);
     const form = e.currentTarget as HTMLFormElement;
     setTaskPriority('P4');

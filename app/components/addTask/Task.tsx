@@ -175,7 +175,7 @@ export default function Task({ task }: TaskProps) {
                   <button type='button' className=' py-1 px-1 flex max-w-fit  rounded  self-end hover:bg-blue-50' >
                     <div className='flex  items-center gap-2'>
                       <span className='text-black text-sm'>{taskProject}</span>
-                      <span className='min-h-[12px] min-w-[12px] bg-stone-400 rounded-full'></span>
+                      <span className='min-h-[12px] min-w-[12px] bg-cyan-800 rounded-full'></span>
                     </div>
                   </button>
                 )
