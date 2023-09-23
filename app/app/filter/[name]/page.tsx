@@ -10,13 +10,11 @@ import sideMenuContext from '../../../components/context/sideMenuContext'
 
 export default function Page({ params }: { params: { name: string } }) {
     const { data: session } = useSession();
-    const label = params.name
+    const priority = params.name
     const tasks = useContext(TaskContext);
     const sideMenuAtive = useContext(sideMenuContext);
     const labelTask = tasks.filter((t) => {
-        console.log(t.labels, 'it is ');
-        console.log(label, 'label is ');
-        return t.labels?.includes(label)
+        return t.priority == priority;
     })
     console.log(labelTask, 'label task');
 
@@ -29,7 +27,7 @@ export default function Page({ params }: { params: { name: string } }) {
 
             <main className="app-container | flex flex-col  mt-8">
                 <div className="flex justify-between pr-2 pb-3 border-b-[1px] ">
-                    <h1 className="font-bold text-[24px]   ">{label}
+                    <h1 className="font-bold text-[24px]   ">{priority}
                     </h1>
                     <ViewContainer />
                 </div>

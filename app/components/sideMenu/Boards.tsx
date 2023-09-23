@@ -1,11 +1,11 @@
 "use client"
 import React, { useContext, useState } from 'react';
 import { useProjectContext } from '../context/ProjectContextWrapper';
-import { getProjectInstaces } from "../../lib/getInstaces";
 import CreateProjectDialog from '../Modals/CreatePorjectModal';
 import { useFavouriteContext } from '../context/FavouriteContextWrapper';
 import { SetTaskContext, TaskContext } from '../context/taskContext';
 import DeleteProjectDialog from '../Modals/DeleteProjectModal';
+import Link from 'next/link';
 
 interface Favourite {
     type: 'project' | 'label' | 'filter';
@@ -136,12 +136,14 @@ function Board() {
                             const noOfProjectInstances = tasks.filter((t) => t.project === p).length;
 
                             return (
-                                <li key={p} className='group p-1 relative pr-2 pl-3 flex justify-between rounded hover:bg-blue-50 hover:cursor-pointer'>
-                                    <div className='flex items-center break-normal max-w-[130px]'>
-                                        <span className='min-h-[12px] min-w-[12px] bg-cyan-800 rounded-full'></span>
-                                        <span className='text-black text-sm ml-2  break-all'>{p}</span>
-                                    </div>
-                                    <span className='text-xs peer text-gray-500'>
+                                <li key={p} className='group p-1 relative pr-1 pl-3 justify-between flex rounded hover:bg-blue-50 '>
+                                    <Link className=' grow' href={`/app/project/${p}`}>
+                                        <div className='flex items-center break-normal hover:underline  hover:cursor-pointer grow'>
+                                            <span className='min-h-[12px] min-w-[12px] bg-cyan-800 rounded-full'></span>
+                                            <span className='text-black text-sm ml-2  break-all'>{p}</span>
+                                        </div>
+                                    </Link>
+                                    <div className='text-xs peer  text-gray-500 '>
                                         {noOfProjectInstances > 0 && (
                                             <span className='absolute right-0 pr-3 group-hover:hidden'>
                                                 {noOfProjectInstances}
@@ -181,8 +183,7 @@ function Board() {
                                                 <DeleteProjectDialog openModal={openDeleteModal} setOpenModal={setOpenDeleteModal} deleteTask={handleDeleteProject} p={p} />
                                             </div>
                                         </span>
-                                    </span>
-
+                                    </div>
                                 </li>
                             );
                         })
