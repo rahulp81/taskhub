@@ -11,7 +11,7 @@ import Link from 'next/dist/client/link'
 
 function SideMenu({ active }: { active: boolean }) {
     const currentRoute = usePathname();
-    
+
     return (
         <section
             className={`flex  flex-col gap-10 side-menu min-h-full w-[275px] bg-[#fafafa] px-6 pt-8 side-menu
@@ -22,13 +22,13 @@ function SideMenu({ active }: { active: boolean }) {
                 <Link href={'/app/inbox'} className={currentRoute == '/app/inbox' ? 'active-link' : ''} >
                     <Inbox />
                 </Link>
-                <Link href={'/app/today'}  className={currentRoute == '/app/today' ? 'active-link' : ''}>
+                <Link href={'/app/today'} className={currentRoute == '/app/today' ? 'active-link' : ''}>
                     <Today />
                 </Link>
-                <Link href={'/app/upcoming'}  className={currentRoute == '/app/upcoming' ? 'active-link' : ''}>
+                <Link href={'/app/upcoming'} className={currentRoute == '/app/upcoming' ? 'active-link' : ''}>
                     <Upcoming />
                 </Link>
-                <Link href={'/app/filters-labels'}  className={currentRoute == '/app/filters-labels' ? 'active-link' : ''}>
+                <Link href={'/app/filters-labels'} className={currentRoute == '/app/filters-labels' ? 'active-link' : ''}>
                     <FilterLabel />
                 </Link>
             </nav>

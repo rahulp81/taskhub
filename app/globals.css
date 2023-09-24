@@ -105,6 +105,15 @@ input:active {
   display: block;
 }
 
+.done.expand-button{
+  transform: scale(1.3);
+  background-color: rgb(212, 255, 224);
+  transition: transform  0.3s ease;
+}
+
+
+
+
 /* styles.css */
 .date-calendar-container {
  border: 2px solid red;
@@ -115,4 +124,28 @@ input:active {
 .css-4jnixx-MuiStack-root>.MuiTextField-root{
   max-width: 175px !important;
   min-width: 0px !important;
+}
+
+
+
+
+
+.MuiDialog-paperScrollPaper {
+  max-height: none; /* Allow the content to expand without a max height */
+}
+
+.MuiDialogContent-root {
+  overflow-y: auto; /* Enable vertical scrolling when the content exceeds the container height */
+}
+
+.css-1t1j96h-MuiPaper-root-MuiDialog-paper{
+  overflow-y: visible !important;
+}
+
+
+/* Toaster */
+
+.my-toast-container {
+  background-color: black !important;
+  color: white !important;
 }

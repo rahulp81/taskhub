@@ -1,6 +1,6 @@
  type Task = {
     id : number,
-    name: string | null;
+    name: string;
     description?: string | null;
     priority?:string | null | undefined;
     due?: Date | null;

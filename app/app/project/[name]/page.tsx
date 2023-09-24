@@ -25,7 +25,7 @@ function Today({params} : {params : {name  : string}} ) {
               <Task key={task.id} task={task}/>
             ))}
           </ul>
-          <AddTask />
+          <AddTask project={params.name}/>
         </div>
       </main>
 

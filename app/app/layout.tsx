@@ -11,10 +11,17 @@ import TaskContextProvider from "../components/context/TasksContext"
 import { TagsProvider } from "../components/context/TagsContext"
 import { ProjectProvider } from "../components/context/ProjectContextWrapper"
 import { FavouriteProvider } from "../components/context/FavouriteContextWrapper"
+import Link from "next/link"
+import AddTaskModal from "../components/Modals/AddTaskModal"
+import { CompletedTaskWrapper } from "../components/context/CompletedTaskContextWrapper"
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export default function DashboardLayout({ children, }: { children: React.ReactNode }) {
   const [sideMenuActive, setSideMenu] = useState<boolean>(true);
   const { data: session } = useSession();
+  const [addTaskModal, toggleAddTaskModal] = useState(false);
   console.log(session);
 
   if (!session) {
@@ -33,9 +40,9 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
             <button className=" p-1 rounded" onClick={toggleSideMenu}>
               <Image src="/icons/menu.svg" alt="menu" height={24} width={24} />
             </button>
-            <button className=" p-1 rounded">
+            <Link href={'/app/today'} className=" p-1 rounded">
               <Image src="/icons/home.svg" alt="home" width={24} height={24} />
-            </button>
+            </Link>
             <label htmlFor="search" className="label | flex items-center text-sm relative bg-blue-400 rounded-md px-1.5 hover:bg-white">
               <SearchIcon />
               <div className="flex shrink">
@@ -48,7 +55,7 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
             </label>
           </div>
           <div className="flex gap-5 shrink-0">
-            <button>
+            <button onClick={() => toggleAddTaskModal(!addTaskModal)}>
               <Image src={'/icons/addTask.svg'} alt="add Task" width={28} height={28} />
             </button>
             <button className="flex text-white gap-1.5 items-center text-sm">
@@ -71,10 +78,14 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
               <TagsProvider >
                 <ProjectProvider>
                   <FavouriteProvider>
-                    {/* Components */}
-                    <SideMenu active={sideMenuActive} />
-                    {children}
-                    {/* Components */}
+                    <CompletedTaskWrapper>
+                      {/* Components */}
+                      <SideMenu active={sideMenuActive} />
+                      <AddTaskModal openModal={addTaskModal} setOpenModal={toggleAddTaskModal} />
+                      {children}
+                      <ToastContainer position="bottom-left" autoClose={2000} theme="dark" />
+                      {/* Components */}
+                    </CompletedTaskWrapper>
                   </FavouriteProvider>
                 </ProjectProvider>
               </TagsProvider>
@@ -82,6 +93,7 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
           </SideMenuContext.Provider>
         </div>
       </main>
+
     </>
   )
 }

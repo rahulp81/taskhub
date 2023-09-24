@@ -13,7 +13,7 @@ interface Favourite {
 }
 
 function Board() {
-    const [isActive, setIsActive] = useState(false);
+    const [isActive, setIsActive] = useState(true);
     const { projects, setProjects } = useProjectContext();
     const [openModal, setOpenModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);

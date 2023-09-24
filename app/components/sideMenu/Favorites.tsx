@@ -68,8 +68,8 @@ function Favorites() {
                                 }
                                 {fav.type === 'filter' && (
                                     <div className='flex items-center grow hover:underline hover:cursor-pointer'>
-                                        <Link className='grow' href={`/filter/${fav.name}`}>
-                                            {fav.name === 'p1' && (
+                                        <Link className='grow' href={`/app/filter/${fav.name}`}>
+                                            {fav.name === 'P1' && (
                                                 <span className='flex gap-1.5'>
                                                     <svg xmlns="http://www.w3.org/2000/svg" className={`fill-red-700`} width="18" height="18" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#ff2825" fill="" strokeLinecap="round" strokeLinejoin="round">
                                                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -78,7 +78,7 @@ function Favorites() {
                                                     <span className='text-sm'>Priority 1</span>
                                                 </span>
                                             )}
-                                            {fav.name === 'p2' && (
+                                            {fav.name === 'P2' && (
                                                 <span className='flex gap-1.5'>
                                                     <svg xmlns="http://www.w3.org/2000/svg" className={`fill-orange-500`} width="18" height="18" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#ff2825" fill="" strokeLinecap="round" strokeLinejoin="round">
                                                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -87,7 +87,7 @@ function Favorites() {
                                                     <span className='text-sm'>Priority 2</span>
                                                 </span>
                                             )}
-                                            {fav.name === 'p3' && (
+                                            {fav.name === 'P3' && (
                                                 <span className='flex gap-1.5'>
                                                     <svg xmlns="http://www.w3.org/2000/svg" className={`fill-blue-700`} width="18" height="18" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#ff2825" fill="" strokeLinecap="round" strokeLinejoin="round">
                                                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -96,7 +96,7 @@ function Favorites() {
                                                     <span className='text-sm'>Priority 3</span>
                                                 </span>
                                             )}
-                                            {fav.name === 'p4' && (
+                                            {fav.name === 'P4' && (
                                                 <span className='flex gap-1.5'>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#000000" fill="none" strokeLinecap="round" strokeLinejoin="round">
                                                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />

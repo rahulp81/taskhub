@@ -13,7 +13,6 @@ import Task from "@/app/components/addTask/Task"
 function Today() {
   const tasks = useContext(TaskContext);
   const sideMenuAtive = useContext(sideMenuContext);
-  console.log(tasks);
 
   const todaysTasks = tasks.filter((task)=> task.due?.toDateString() == new Date().toDateString() )
   return (
@@ -21,7 +20,7 @@ function Today() {
 
       <main className="app-container | flex flex-col  mt-8">
         <div className="flex justify-between pr-2 pb-3 border-b-[1px] ">
-          <h1 className="font-bold text-[24px]   ">Today
+          <h1 className="font-bold text-[24px]">Today
             <span className="text-[14px] text-gray-500 font-normal ml-2">{currentDate}</span>
           </h1>
           <ViewContainer />
@@ -32,7 +31,7 @@ function Today() {
               <Task key={task.id} task={task}/>
             ))}
           </ul>
-          <AddTask />
+          <AddTask today/>
         </div>
       </main>
 

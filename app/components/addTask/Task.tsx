@@ -11,10 +11,21 @@ import { format } from 'date-fns';
 import Link from 'next/link';
 import Project from '../projects/Project';
 import DeleteDialog from '../Modals/DeleteModal';
+import { useCompletedTaskContext } from '../context/CompletedTaskContextWrapper';
 
 interface TaskProps {
   task: Task;
 }
+
+interface completedTaskType {
+  taskName: string,
+  completedAt: Date
+  status: 'ontime' | 'late' | 'noDue'
+}
+
+
+const todaysDate = new Date();
+todaysDate.setHours(0, 0, 0, 0);
 
 export default function Task({ task }: TaskProps) {
   const updateTask = useContext(SetTaskContext);
@@ -29,9 +40,11 @@ export default function Task({ task }: TaskProps) {
   const [updatedLabels, setUpdatedLabels] = useState<string[] | null>(labels as string[]);
   const [updatedTaskProject, setUpdatedTaskProject] = useState<string | null>(taskProject)
   const [modalOpen, setModalOpen] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
+  const doneButtonRef = useRef<HTMLButtonElement | null>(null);
+  const { completedTask, setCompletedTask } = useCompletedTaskContext()
 
-  console.log('label is', labels);
+  console.log('task is ', tasks);
+  console.log('completed', completedTask);
 
   // For Editor
   const [name, setName] = useState(task.name);
@@ -93,6 +106,28 @@ export default function Task({ task }: TaskProps) {
     updateTask(updatedTasks);
   }
 
+  function handleDoneClick() {
+    const button = doneButtonRef.current as HTMLButtonElement;
+    button?.classList.add('expand-button');
+    const audio = new Audio('/sound/taskdone.mp3');
+    audio.play();
+
+    setTimeout(() => {
+      setCompletedTask((prevTask) => {
+        if (prevTask) {
+          const completedTaskItem: completedTaskType = {
+            taskName: task.name,
+            completedAt: new Date(),
+            status: task.due ? (task.due >= todaysDate ? 'ontime' : 'late') : 'noDue',
+          };
+          return [...prevTask, completedTaskItem];
+        }
+        return [];
+      });
+      deleteTask();
+    }, 300);
+  }
+
 
 
   return (!isEditing) ?
@@ -100,12 +135,12 @@ export default function Task({ task }: TaskProps) {
       <>
         <li
           key={task.id}
-          className="border-b-[1px] flex px-2.5 py-2.5 justify-between cursor-pointer group relative" >
+          className="border-b-[1px] flex px-2.5 py-2.5 justify-between  group relative" >
           <div className="flex gap-2.5 relative">
             {/* Drag feature <span className="absolute -top-[2px] -left-[33px] opacity-0 group-hover:opacity-100 rounded hover:bg-slate-100 cursor-move p-[2px]">
           <Image src={'/icons/drag.svg'} alt="drag" height={20} width={20} />
         </span> */}
-            <button className={`done | w-[20px] h-[20px] border-[1.5px]  p-1 rounded-full flex items-center hover:bg-slate-100
+            <button onClick={handleDoneClick} ref={doneButtonRef} className={`done | w-[20px] h-[20px] border-[1.5px]  p-1 rounded-full flex items-center hover:bg-slate-100
          ${priority == 'P1' ? `border-red-500 bg-red-300` : priority == 'P2' ? `border-orange-500 bg-orange-300 ` : priority == 'P3' ? `border-blue-500 bg-blue-300` : `border-gray-500`} `}>
               <span className="text-sm font-bold text-green-600 hidden">&#x2713;</span>
             </button>
@@ -129,7 +164,7 @@ export default function Task({ task }: TaskProps) {
                   </span>}
                 <span className='flex gap-2 flex-wrap max-w-[200px] md:max-w-[300px]  lg:max-w-none gap-y-0.5'>
                   {labels?.map((l, index) => (
-                    <Link key={l} href='' className='text-[13px] flex items-center text-gray-500 hover:underline'>
+                    <Link key={l} href={`/app/label/${l}`} className='text-[13px] flex items-center text-gray-500 hover:underline'>
                       <svg xmlns="http://www.w3.org/2000/svg" width={12} height={12} viewBox="0 0 24 24" className={'fill-gray-500'}>
                         <path d="M10.9042 2.1001L20.8037 3.51431L22.2179 13.4138L13.0255 22.6062C12.6350 22.9967 12.0019 22.9967 11.6113 22.6062L1.71184 12.7067C1.32131 12.3162 1.32131 11.683 1.71184 11.2925L10.9042 2.1001ZM11.6113 4.22142L3.83316 11.9996L12.3184 20.4849L20.0966 12.7067L19.0360 5.28208L11.6113 4.22142ZM13.7327 10.5854C12.9516 9.80433 12.9516 8.5380 13.7327 7.75695C14.5137 6.9759 15.7800 6.9759 16.5611 7.75695C17.3421 8.5380 17.3421 9.80433 16.5611 10.5854C15.7800 11.3664 14.5137 11.3664 13.7327 10.5854Z"></path>
                       </svg>
@@ -166,19 +201,24 @@ export default function Task({ task }: TaskProps) {
             </div>
             {
               taskProject == 'Inbox' ?
-                (<button type='button' className=' py-1 px-1 flex max-w-fit items-center self-end rounded hover:bg-blue-50' >
-                  <div className='flex  items-center gap-2'>
-                    <span className='text-black text-sm '>Inbox</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" height={20} width={20} viewBox="0 0 24 24"><path d="M4.02381 3.78307C4.12549 3.32553 4.5313 3 5 3H19C19.4687 3 19.8745 3.32553 19.9762 3.78307L21.9762 12.7831C21.992 12.8543 22 12.927 22 13V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V13C2 12.927 2.00799 12.8543 2.02381 12.7831L4.02381 3.78307ZM5.80217 5L4.24662 12H9C9 13.6569 10.3431 15 12 15C13.6569 15 15 13.6569 15 12H19.7534L18.1978 5H5.80217ZM16.584 14C15.8124 15.7659 14.0503 17 12 17C9.94968 17 8.1876 15.7659 7.41604 14H4V19H20V14H16.584Z" fill="#dc4c3e"></path></svg>
-                  </div>
-                </button>) :
                 (
-                  <button type='button' className=' py-1 px-1 flex max-w-fit  rounded  self-end hover:bg-blue-50' >
-                    <div className='flex  items-center gap-2'>
-                      <span className='text-black text-sm'>{taskProject}</span>
-                      <span className='min-h-[12px] min-w-[12px] bg-cyan-800 rounded-full'></span>
-                    </div>
-                  </button>
+                  <Link href={`/app/inbox`}>
+                    <button type='button' className=' py-1 px-1 flex max-w-fit items-center self-end rounded hover:bg-blue-50' >
+                      <div className='flex  items-center gap-2'>
+                        <span className='text-black text-sm '>Inbox</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" height={20} width={20} viewBox="0 0 24 24"><path d="M4.02381 3.78307C4.12549 3.32553 4.5313 3 5 3H19C19.4687 3 19.8745 3.32553 19.9762 3.78307L21.9762 12.7831C21.992 12.8543 22 12.927 22 13V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V13C2 12.927 2.00799 12.8543 2.02381 12.7831L4.02381 3.78307ZM5.80217 5L4.24662 12H9C9 13.6569 10.3431 15 12 15C13.6569 15 15 13.6569 15 12H19.7534L18.1978 5H5.80217ZM16.584 14C15.8124 15.7659 14.0503 17 12 17C9.94968 17 8.1876 15.7659 7.41604 14H4V19H20V14H16.584Z" fill="#dc4c3e"></path></svg>
+                      </div>
+                    </button>
+                  </Link>) :
+                (
+                  <Link  href={`/app/project/${taskProject}`}>
+                    <button type='button' className=' py-1 px-1 flex max-w-fit  rounded  self-end hover:bg-blue-50' >
+                      <div className='flex  items-center gap-2'>
+                        <span className='text-black text-sm'>{taskProject}</span>
+                        <span className='min-h-[12px] min-w-[12px] bg-cyan-800 rounded-full'></span>
+                      </div>
+                    </button>
+                  </Link>
                 )
             }
 
@@ -214,6 +254,7 @@ export default function Task({ task }: TaskProps) {
                 setUpdatedLabels(labels);
                 setUpdatedTaskProject(taskProject);
                 setName(task.name)
+                setDescription(task.description)
               }}>
                 Cancel
               </button>

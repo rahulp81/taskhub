@@ -6,16 +6,29 @@ import Label from '../Svg/Label';
 import { SetTaskContext, TaskContext } from '../context/taskContext';
 import { useTagsContext } from '../context/TagsContext';
 import Project from '../projects/Project';
+import { toast } from 'react-toastify';
+import Link from 'next/link';
 
+const todaysDate = new Date();
+todaysDate.setHours(0, 0, 0, 0);
 
-function addTask() {
+type addTask = {
+  today? : boolean | null,
+  project? : string,
+  tags? : string[],
+  priority? : string,
+}
+
+function addTask({today,project,tags,priority}: addTask) {
   const [editing, setEditing] = useState(false)
   const [taskPriority, setTaskPriority] = useState('P4');
   const [name, setName] = useState('');
   const formRef = useRef<HTMLFormElement>(null);
-  const [dueDate, setDueDate] = useState<Date | null>(null)
+  const [dueDate, setDueDate] = useState<Date | null>(today ? todaysDate : null)
   const [labels, setLabels] = useState<string[] | null>([])
-  const [taskproject, setTaskProject] = useState<string | null>('Inbox')
+  const [taskproject, setTaskProject] = useState<string | null>(project ? project : 'Inbox')
+
+
 
   const setTask = useContext(SetTaskContext);
   const currentLabels =
@@ -39,11 +52,16 @@ function addTask() {
     const tags = labels || [];
     const taskDetail = { name, description, id, priority, due, labels : tags, project };
     setTask((prevTasks) => [...prevTasks, taskDetail]);
+    toast.success(
+      <p>
+       Task added to <Link className='underline font-bold' href={`/app/project/${taskproject}`} >{taskproject}</Link>
+      </p>
+    );
     const form = e.currentTarget as HTMLFormElement;
     setTaskPriority('P4');
-    setDueDate(null);
+    setDueDate(today ? todaysDate : null);
     setLabels(labels);
-    setTaskProject('Inbox')
+    setTaskProject(project ? project : 'Inbox')
     form.reset();
     setName('');
     setEditing(!editing);
@@ -53,9 +71,9 @@ function addTask() {
     if (formRef.current) {
       setEditing(!editing);
       setTaskPriority('P4');
-      setDueDate(null);
+      setDueDate(today ? todaysDate : null);
       setLabels([]);
-      setTaskProject('Inbox')
+      setTaskProject(project ? project : 'Inbox')
       formRef.current.reset();
       setName('');
     }
