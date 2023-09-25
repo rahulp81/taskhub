@@ -18,6 +18,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Button, Popover } from "@mui/material"
 import MyPopover from "../components/productivity/popover"
+import ProfileDropDown from "../components/profile/ProfileDropDown"
 
 
 
@@ -117,6 +118,7 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
                       <AddTaskModal openModal={addTaskModal} setOpenModal={toggleAddTaskModal} />
                       {children}
                       <MyPopover anchorEl={anchorEl} onClose={handleClose} open={open} />
+                      <ProfileDropDown anchorEl={anchorElProfile} onClose={handleCloseProfile} open={openProfile} />
                       <ToastContainer position="bottom-left" autoClose={2000} theme="dark" />
                       {/* Components */}
                     </CompletedTaskWrapper>
