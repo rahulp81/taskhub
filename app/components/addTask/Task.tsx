@@ -12,6 +12,7 @@ import Link from 'next/link';
 import Project from '../projects/Project';
 import DeleteDialog from '../Modals/DeleteModal';
 import { useCompletedTaskContext } from '../context/CompletedTaskContextWrapper';
+import { toast } from 'react-toastify';
 
 interface TaskProps {
   task: Task;
@@ -42,9 +43,6 @@ export default function Task({ task }: TaskProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const doneButtonRef = useRef<HTMLButtonElement | null>(null);
   const { completedTask, setCompletedTask } = useCompletedTaskContext()
-
-  console.log('task is ', tasks);
-  console.log('completed', completedTask);
 
   // For Editor
   const [name, setName] = useState(task.name);
@@ -116,7 +114,7 @@ export default function Task({ task }: TaskProps) {
       setCompletedTask((prevTask) => {
         if (prevTask) {
           const completedTaskItem: completedTaskType = {
-            taskName: task.name,
+            taskName: task.name as string,
             completedAt: new Date(),
             status: task.due ? (task.due >= todaysDate ? 'ontime' : 'late') : 'noDue',
           };
@@ -125,6 +123,11 @@ export default function Task({ task }: TaskProps) {
         return [];
       });
       deleteTask();
+      toast.success(
+        <p>
+         Task {name} completed
+        </p>
+      );
     }, 300);
   }
 

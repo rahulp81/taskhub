@@ -16,12 +16,42 @@ import AddTaskModal from "../components/Modals/AddTaskModal"
 import { CompletedTaskWrapper } from "../components/context/CompletedTaskContextWrapper"
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Button, Popover } from "@mui/material"
+import MyPopover from "../components/productivity/popover"
+
 
 
 export default function DashboardLayout({ children, }: { children: React.ReactNode }) {
   const [sideMenuActive, setSideMenu] = useState<boolean>(true);
   const { data: session } = useSession();
   const [addTaskModal, toggleAddTaskModal] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [anchorElProfile, setAnchorElProfile] = useState<HTMLButtonElement | null>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
+
+  const handleClickProfile = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorElProfile(event.currentTarget);
+  };
+
+  const handleCloseProfile = () => {
+    setAnchorElProfile(null);
+  };
+
+
+  const openProfile = Boolean(anchorElProfile);
+  const idProfile = openProfile ? 'simple-popover' : undefined;
+
+
   console.log(session);
 
   if (!session) {
@@ -58,16 +88,19 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
             <button onClick={() => toggleAddTaskModal(!addTaskModal)}>
               <Image src={'/icons/addTask.svg'} alt="add Task" width={28} height={28} />
             </button>
-            <button className="flex text-white gap-1.5 items-center text-sm">
-              <Image src={'/icons/productivity.svg'} alt="productivity dashboard" width={24} height={24} />
-              <span className="hidden sm:block">0/5</span>
-            </button>
-            <button>
-              <Image src={'/icons/notification.svg'} alt="notification" width={24} height={24} />
-            </button>
-            <button>
-              <img src={`${session?.user?.image}`} alt="profile" width={25} height={25} className="rounded-full" />
-            </button>
+
+            <div className="flex items-center">
+              <button className={`flex text-white gap-1.5 p-1 rounded items-center text-sm hover:bg-blue-800 ${open ? 'bg-blue-700' : ''}`} aria-describedby={id} onClick={handleClick}>
+                <Image src={'/icons/productivity.svg'} alt="productivity dashboard" width={24} height={24} />
+              </button>
+            </div>
+
+            <div className="flex items-center">
+            <button className={`flex text-white gap-1.5 p-1 rounded items-center text-sm hover:bg-blue-800 ${openProfile ? 'bg-blue-700' : ''}`} aria-describedby={idProfile} onClick={handleClickProfile}>
+                <img src={`${session?.user?.image}`} alt="profile" width={25} height={25} className="rounded-full" />
+              </button>
+            </div>
+
           </div>
         </div>
       </header>
@@ -83,6 +116,7 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
                       <SideMenu active={sideMenuActive} />
                       <AddTaskModal openModal={addTaskModal} setOpenModal={toggleAddTaskModal} />
                       {children}
+                      <MyPopover anchorEl={anchorEl} onClose={handleClose} open={open} />
                       <ToastContainer position="bottom-left" autoClose={2000} theme="dark" />
                       {/* Components */}
                     </CompletedTaskWrapper>

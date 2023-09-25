@@ -13,8 +13,11 @@ import Task from "@/app/components/addTask/Task"
 function Today() {
   const tasks = useContext(TaskContext);
   const sideMenuAtive = useContext(sideMenuContext);
+  const [search,setSearch] = useState('');
 
-  const todaysTasks = tasks.filter((task)=> task.due?.toDateString() == new Date().toDateString() )
+  const todaysTasks = tasks.filter((task)=> task.due?.toDateString() == new Date().toDateString());
+  const displayTasks = search ? todaysTasks.filter((task)=> task.name?.toLowerCase().includes(search)) : todaysTasks;
+
   return (
     <div className={`grow  flex justify-center  transition-all duration-[500ms] ease-in-out ${sideMenuAtive ? '' : 'min-[800px]:ml-[-275px]'}`}>
 
@@ -27,7 +30,7 @@ function Today() {
         </div>
         <div className="flex flex-col w-full gap-2 ">
           <ul>
-            {todaysTasks.map((task) => (
+            {displayTasks.map((task) => (
               <Task key={task.id} task={task}/>
             ))}
           </ul>
