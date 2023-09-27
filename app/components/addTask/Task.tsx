@@ -95,37 +95,74 @@ export default function Task({ task }: TaskProps) {
       }
     }
     updateTask(updatedTasks);
+    fetch(`/api/app/task`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        id: id,
+        name: name,
+        description: description,
+        priority: priority,
+        due: due,
+        labels: tags,
+        project: project,
+      })
+    })
     // const form = e.currentTarget as HTMLFormElement;
     setIsEditing(!isEditing)
   }
 
   function deleteTask() {
     const updatedTasks = tasks.filter((t) => t.id !== task.id);
+    fetch(`/api/app/task`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        taskId: task.id
+      })
+    })
     updateTask(updatedTasks);
   }
 
-  function handleDoneClick() {
+  async function handleDoneClick() {
     const button = doneButtonRef.current as HTMLButtonElement;
     button?.classList.add('expand-button');
     const audio = new Audio('/sound/taskdone.mp3');
     audio.play();
 
     setTimeout(() => {
+
+      const completedTaskItem: completedTaskType = {
+        taskName: task.name as string,
+        completedAt: new Date(),
+        status: task.due ? (task.due >= todaysDate ? 'ontime' : 'late') : 'noDue',
+      };
+
       setCompletedTask((prevTask) => {
         if (prevTask) {
-          const completedTaskItem: completedTaskType = {
-            taskName: task.name as string,
-            completedAt: new Date(),
-            status: task.due ? (task.due >= todaysDate ? 'ontime' : 'late') : 'noDue',
-          };
           return [...prevTask, completedTaskItem];
         }
-        return [];
+        return [completedTaskItem];
       });
+
+      fetch(`/api/app/completedTask`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          completedTaskItem : completedTaskItem
+        })
+      })
+
       deleteTask();
       toast.success(
         <p>
-         Task {name} completed
+          Task {name} completed
         </p>
       );
     }, 300);
@@ -214,7 +251,7 @@ export default function Task({ task }: TaskProps) {
                     </button>
                   </Link>) :
                 (
-                  <Link  href={`/app/project/${taskProject}`}>
+                  <Link href={`/app/project/${taskProject}`}>
                     <button type='button' className=' py-1 px-1 flex max-w-fit  rounded  self-end hover:bg-blue-50' >
                       <div className='flex  items-center gap-2'>
                         <span className='text-black text-sm'>{taskProject}</span>

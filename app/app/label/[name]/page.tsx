@@ -10,12 +10,10 @@ import sideMenuContext from '../../../components/context/sideMenuContext'
 
 export default function Page({ params }: { params: { name: string } }) {
     const { data: session } = useSession();
-    const label = params.name
+    const label = decodeURIComponent(params.name)
     const tasks = useContext(TaskContext);
     const sideMenuAtive = useContext(sideMenuContext);
     const labelTask = tasks.filter((t) => {
-        console.log(t.labels, 'it is ');
-        console.log(label, 'label is ');
         return t.labels?.includes(label)
     })
     console.log(labelTask, 'label task');

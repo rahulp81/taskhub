@@ -8,14 +8,15 @@ import Task from "@/app/components/addTask/Task"
 
 function Today({params} : {params : {name  : string}} ) {
   const tasks = useContext(TaskContext);
-  const tasksInProject = tasks.filter((task)=> task.project ==  params.name);
+  const project = decodeURIComponent(params.name)
+  const tasksInProject = tasks.filter((task)=> task.project ==  project);
   const sideMenuActive = useContext(sideMenuContext);
   return (
     <div className={`grow  flex justify-center  transition-all duration-[500ms] ease-in-out ${sideMenuActive ? '' : 'min-[800px]:ml-[-275px]'}`}>
 
       <main className="app-container | flex flex-col  mt-8">
         <div className="flex justify-between pr-2 pb-3 border-b-[1px] ">
-          <h1 className="font-bold text-[24px]   ">{params.name}
+          <h1 className="font-bold text-[24px]   ">{project}
           </h1>
           <ViewContainer />
         </div>
@@ -25,7 +26,7 @@ function Today({params} : {params : {name  : string}} ) {
               <Task key={task.id} task={task}/>
             ))}
           </ul>
-          <AddTask project={params.name}/>
+          <AddTask project={project}/>
         </div>
       </main>
 

@@ -21,6 +21,15 @@ function Favorites() {
         if (favourite !== null) {
             const updatedFavorites = favourite.filter((fav) => fav.name !== nameToRemove);
             setFavourite(updatedFavorites);
+            fetch(`/api/app/project`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: nameToRemove
+                })
+            })
         }
     }
 

@@ -19,6 +19,14 @@ function Project({ taskProject, setTaskProject }: { taskProject: string | null, 
     // <span className='ml-auto'>&#10004;</span>
 
     function handleCreateProject() {
+        fetch(`/api/app/project`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain'
+            },
+            body: projectSearch
+        })
+
         setProjects((prevProjects) => {
             const existingProjects = prevProjects || [];
             const updatedProjects = [...existingProjects, projectSearch];

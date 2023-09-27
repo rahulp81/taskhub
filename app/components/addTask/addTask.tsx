@@ -57,6 +57,27 @@ function addTask({today,project,tags,priority}: addTask) {
        Task added to <Link className='underline font-bold' href={`/app/project/${taskproject}`} >{taskproject}</Link>
       </p>
     );
+
+    fetch('/api/app/task',{
+      method: 'POST',
+      headers : {
+        'Content-Type': 'application/json',
+      },
+      body : JSON.stringify(taskDetail)
+    }).then((response) => {
+      if (response.ok) {
+       console.log('task added to backend');
+      } else {
+       setTask((prevTasks) => {
+        const revertTask = prevTasks.filter((t)=> !(t.id == id))
+        return revertTask
+       } )
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
     const form = e.currentTarget as HTMLFormElement;
     setTaskPriority('P4');
     setDueDate(today ? todaysDate : null);

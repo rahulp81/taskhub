@@ -39,10 +39,17 @@ function Label({ setLabels, labels }: { labels: string[] | null, setLabels: Reac
     function handleCreateLabel() {
         console.log('clicked');
         console.log(tagsSearch);
-        const updatedTags = tags;
+        const updatedTags = [...tags as string[]];
         updatedTags?.push(tagsSearch)
         console.log(updatedTags);
-        setTags(updatedTags)
+        setTags(updatedTags);
+        fetch(`/api/app/label`,{
+            method: 'POST',
+            headers : {
+                'Content-Type' : 'text/plain'
+            },
+            body : tagsSearch
+        })
         const newTemp = [...labels as string[]];
         newTemp.push(tagsSearch);
         setLabels(newTemp)
