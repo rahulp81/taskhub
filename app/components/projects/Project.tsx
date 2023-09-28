@@ -24,7 +24,10 @@ function Project({ taskProject, setTaskProject }: { taskProject: string | null, 
             headers: {
                 'Content-Type': 'text/plain'
             },
-            body: projectSearch
+            body: JSON.stringify({
+                name : projectSearch,
+                isFavorite : false
+            })
         })
 
         setProjects((prevProjects) => {

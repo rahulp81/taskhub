@@ -110,8 +110,31 @@ export default function CreateLabelDialog({ openModal, setOpenModal }
                                                     const updatedFav = [...currentFav, newFav]
                                                     return updatedFav
                                                 })
+                                                fetch(`/api/app/label`, {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    body: JSON.stringify({
+                                                        name: name,
+                                                        isFavorite: true
+                                                    })
+                                                })
+                                            } else {
+                                                fetch(`/api/app/label`, {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    body: JSON.stringify({
+                                                        name: name,
+                                                        isFavorite: false
+                                                    })
+                                                })
                                             }
                                             setOpenModal(false);
+                                            setName('');
+                                            setError('')
                                         } else {
                                             setError('A Label with same name already exists!.');
                                         }

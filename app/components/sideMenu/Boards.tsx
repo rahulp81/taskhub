@@ -83,7 +83,7 @@ function Board() {
             return prevProjects;
         });
 
-        // Can do this is in project Route itself.
+
         fetch(`/api/app/project`, {
             method: 'DELETE',
             headers: {
@@ -94,6 +94,7 @@ function Board() {
             })
         })
 
+        //DB sync handled in api endpoint itself
         // Remove the project from the 'favorites' state
         setFavourite((prevFav) => {
             if (prevFav) {
@@ -105,15 +106,6 @@ function Board() {
             return prevFav;
         });
 
-        fetch(`/api/app/favorite`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name: projectName
-            })
-        })
 
         // Remove tasks associated with the deleted project
         setTasks((prevTasks) => {
@@ -142,16 +134,6 @@ function Board() {
                 const updatedFav = [...currentFav, newFav]
                 return updatedFav
             })
-            fetch(`/api/app/favorite`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    type: 'project',
-                    name: name,
-                })
-            })
         }
         setProjects((prevProjects) => {
             const existingProject = prevProjects || [];
@@ -162,9 +144,12 @@ function Board() {
         fetch(`/api/app/project`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'text/plain'
+                'Content-Type': 'application/json'
             },
-            body: name
+            body: JSON.stringify({
+                name: name,
+                isFavorite: checked
+            })
         })
 
     }

@@ -20,7 +20,7 @@ function Label({ setLabels, labels }: { labels: string[] | null, setLabels: Reac
     function handleLabelAddition(label: string) {
         const index = labels?.indexOf(label);
 
-        console.log(labels,'clicked');
+        console.log(labels, 'clicked');
         if (index as number > -1) {
             const newTemp = [...labels as string[]];
             newTemp.splice(index as number, 1)
@@ -43,12 +43,15 @@ function Label({ setLabels, labels }: { labels: string[] | null, setLabels: Reac
         updatedTags?.push(tagsSearch)
         console.log(updatedTags);
         setTags(updatedTags);
-        fetch(`/api/app/label`,{
+        fetch(`/api/app/label`, {
             method: 'POST',
-            headers : {
-                'Content-Type' : 'text/plain'
+            headers: {
+                'Content-Type': 'application/json'
             },
-            body : tagsSearch
+            body: JSON.stringify({
+                name: tagsSearch,
+                isFavorite: false
+            })
         })
         const newTemp = [...labels as string[]];
         newTemp.push(tagsSearch);
@@ -81,13 +84,13 @@ function Label({ setLabels, labels }: { labels: string[] | null, setLabels: Reac
             {
                 active &&
                 <div className='bg-white absolute -left-[10%]  rounded shadow border-[1px] min-w-[200px] z-50 ' ref={dropdownRef}>
-                     <input
-                            type="text"
-                            className="w-full px-2 text-base pb-1.5 border-b-[1px]"
-                            placeholder="Type a label"
-                            value={tagsSearch}
-                            onChange={(e) => setTagsSearch(e.target.value)}
-                        />
+                    <input
+                        type="text"
+                        className="w-full px-2 text-base pb-1.5 border-b-[1px]"
+                        placeholder="Type a label"
+                        value={tagsSearch}
+                        onChange={(e) => setTagsSearch(e.target.value)}
+                    />
                     <ul className="flex flex-col w-full overflow-y-scroll max-h-[200px]">
                         {filteredLabels?.map((label) => (
                             <li

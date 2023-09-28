@@ -31,6 +31,17 @@ function Filter() {
                 const updatedFav = prevFav.filter((fav) => !(fav.type == 'filter' && fav.name == filter));
                 return updatedFav
             })
+
+            fetch(`/api/app/favorite`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: filter
+                })
+            })
+
         } else {
             setFavourite((prevFav) => {
                 const existingFav = prevFav || [];
@@ -41,6 +52,18 @@ function Filter() {
                 const updatedFav = [...existingFav, newFav]
                 return updatedFav
             })
+
+            fetch(`/api/app/favorite`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    type: 'filter',
+                    name: filter,
+                })
+            })
+
         }
     }
 
