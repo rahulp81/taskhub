@@ -17,6 +17,7 @@ export async function POST(req: Request) {
     );
   }
   const { name, isFavorite } = await req.json();
+  console.log(name, isFavorite);
 
   const user = await UserModel.findOne({ email: session?.user?.email });
 
@@ -25,40 +26,64 @@ export async function POST(req: Request) {
   }
 
   try {
-    const existingFavorites = await FavoritesModel.findOne({
+    const existingTags = await TagsModel.findOne({
       user_id: user._id,
     });
 
-    if (!existingFavorites) {
-      const fav = new FavoritesModel({
+    if (!existingTags) {
+      const tag = new TagsModel({
         user_id: user._id,
-        favorites: [],
+        tags: [name],
       });
-      await fav.save();
+      await tag.save();
+    } else {
+      if (!existingTags.tags.includes(name)) {
+        existingTags.tags.push(name);
+        await existingTags.save();
+      }
     }
-
-    const labelIndex = existingFavorites.favorites.findIndex(
-      (fav: { name: string; type: string }) =>
-        fav.type === "label" && fav.name === name
-    );
 
     if (isFavorite) {
-      if (labelIndex === -1) {
-        existingFavorites.favorites.push({
-          name: name,
-          type: "label",
+      console.log("it is a favourite");
+      const existingFavorites = await FavoritesModel.findOne({
+        user_id: user._id,
+      });
+
+      if (existingFavorites) {
+        const preExisting = existingFavorites.favorites.find(
+          (fav: { name: string; type: string }) => {
+            return fav.name === name && fav.type === "label";
+          }
+        );
+
+        if (!preExisting) {
+          console.log("no same named favs");
+
+          existingFavorites.favorites.push({
+            name: name,
+            type: "label",
+          });
+          await existingFavorites.save();
+        } else {
+          return NextResponse.json({
+            success: `Fav Exists`,
+          });
+        }
+      } else {
+        const newFav = new FavoritesModel({
+          user_id: user._id,
+          favorites: [
+            {
+              name: name,
+              type: "label",
+            },
+          ],
         });
-        await existingFavorites.save();
-      }
-    } else {
-      if (labelIndex !== -1) {
-        existingFavorites.favorites.splice(labelIndex, 1);
-        await existingFavorites.save();
+        await newFav.save();
       }
     }
-
     return NextResponse.json({
-      success: "Favorite status updated",
+      success: `Saved Label ${isFavorite ? "& favorite" : ""}`,
     });
   } catch (error) {
     console.error("Error updating favorite:", error);

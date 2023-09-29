@@ -1,6 +1,9 @@
+"use client"
 import UseClickOutside from '@/app/components/hooks/UseClickOutside'
 import React, { useContext, useRef, useState } from 'react'
 import { useTagsContext } from '../context/TagsContext';
+import createLabel from '@/app/lib/sync api/createLabel'
+import { useMutation } from 'react-query';
 
 function Label({ setLabels, labels }: { labels: string[] | null, setLabels: React.Dispatch<React.SetStateAction<string[] | null>> }) {
     const [active, setIsActive] = useState(false);
@@ -11,9 +14,35 @@ function Label({ setLabels, labels }: { labels: string[] | null, setLabels: Reac
     const { tags, setTags } = useTagsContext();
     UseClickOutside({ buttonRef, dropdownRef, setIsActive })
 
+    const createLabelMutation = useMutation(createLabel, {
+        retry: 3
+    });
+
     const filteredLabels = tagsSearch
         ? tags?.filter((label) => label.toLowerCase().includes(tagsSearch.toLowerCase()))
         : tags;
+
+
+
+    const AddLabel = async (checked: boolean, name: string) => {
+        try {
+            const response = await createLabelMutation.mutateAsync({
+                name: name,
+                isFavorite: checked,
+            });
+
+            // Check if the response is okay
+            if (response && response.ok) {
+                console.log('Label created:', await response.json());
+            } else {
+                // Handle the case where the response indicates an error
+                console.error('Failed to create label. Unexpected response:', response);
+            }
+        } catch (error) {
+            console.error('Failed to create label:', error);
+        }
+    };
+
 
 
     //For Current Task aka choosing from available tags
@@ -43,16 +72,7 @@ function Label({ setLabels, labels }: { labels: string[] | null, setLabels: Reac
         updatedTags?.push(tagsSearch)
         console.log(updatedTags);
         setTags(updatedTags);
-        fetch(`/api/app/label`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name: tagsSearch,
-                isFavorite: false
-            })
-        })
+        AddLabel(false, tagsSearch) //mutation function
         const newTemp = [...labels as string[]];
         newTemp.push(tagsSearch);
         setLabels(newTemp)

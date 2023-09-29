@@ -35,9 +35,19 @@ export async function POST(req: Request) {
         success: "Successfully new Favorites created &  added",
       });
     } else {
-      existingFavorites.favorites.push({ name, type });
-      await existingFavorites.save();
-      return NextResponse.json({ success: "Successfully Favorites updated" });
+      const preExisting = existingFavorites.favorites.find(
+        (fav: { name: string; type: string }) => {
+          return fav.name === name && fav.type === "label";
+        }
+      );
+
+      if (!preExisting) {
+        existingFavorites.favorites.push({ name, type });
+        await existingFavorites.save();
+        return NextResponse.json({ success: "Successfully Favorites updated" });
+      } else {
+        return NextResponse.json({ success: " Favorites already exist" });
+      }
     }
   } catch (error) {
     console.error("Error saving favorite:", error);
@@ -58,7 +68,7 @@ export async function DELETE(req: Request) {
       { status: 403 }
     );
   }
-  const { name } = await req.json();
+  const { name, type } = await req.json();
 
   const user = await UserModel.findOne({ email: session?.user?.email });
 
@@ -75,8 +85,10 @@ export async function DELETE(req: Request) {
       });
     } else {
       existingFavorites.favorites = existingFavorites.favorites.filter(
-        (favorite: { name: string; type: string }) => favorite.name !== name
+        (favorite: { name: string; type: string }) =>
+          !(favorite?.type === type && favorite.name === name)
       );
+
       await existingFavorites.save();
       return NextResponse.json({
         success: "Successfully deleted Favorites ",

@@ -16,11 +16,12 @@ import AddTaskModal from "../components/Modals/AddTaskModal"
 import { CompletedTaskWrapper } from "../components/context/CompletedTaskContextWrapper"
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Button, Popover } from "@mui/material"
 import MyPopover from "../components/productivity/popover"
 import ProfileDropDown from "../components/profile/ProfileDropDown"
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
-
+const queryClient = new QueryClient();
 
 export default function DashboardLayout({ children, }: { children: React.ReactNode }) {
   const [sideMenuActive, setSideMenu] = useState<boolean>(true);
@@ -97,7 +98,7 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
             </div>
 
             <div className="flex items-center">
-            <button className={`flex text-white gap-1.5 p-1 rounded items-center text-sm hover:bg-blue-800 ${openProfile ? 'bg-blue-700' : ''}`} aria-describedby={idProfile} onClick={handleClickProfile}>
+              <button className={`flex text-white gap-1.5 p-1 rounded items-center text-sm hover:bg-blue-800 ${openProfile ? 'bg-blue-700' : ''}`} aria-describedby={idProfile} onClick={handleClickProfile}>
                 <img src={`${session?.user?.image}`} alt="profile" width={25} height={25} className="rounded-full" />
               </button>
             </div>
@@ -116,7 +117,9 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
                       {/* Components */}
                       <SideMenu active={sideMenuActive} />
                       <AddTaskModal openModal={addTaskModal} setOpenModal={toggleAddTaskModal} />
-                      {children}
+                      <QueryClientProvider client={queryClient}>
+                        {children}
+                      </QueryClientProvider>
                       <MyPopover anchorEl={anchorEl} onClose={handleClose} open={open} />
                       <ProfileDropDown anchorEl={anchorElProfile} onClose={handleCloseProfile} open={openProfile} />
                       <ToastContainer position="bottom-left" autoClose={2000} theme="dark" />

@@ -5,13 +5,12 @@ import sideMenuContext from '../../components/context/sideMenuContext'
 import { useTagsContext } from '@/app/components/context/TagsContext';
 import Filter from '@/app/components/filters/Filter';
 import CreateLabelDialog from '@/app/components/Modals/CreateLabelModal';
-import Link from 'next/link';
-import DeleteProjectDialog from '@/app/components/Modals/DeleteProjectModal';
 import { useFavouriteContext } from '@/app/components/context/FavouriteContextWrapper';
 import { SetTaskContext } from '@/app/components/context/taskContext';
 import Tags from './Tags';
-import debounce from 'lodash/debounce';
 import { useRef } from 'react';
+import { useMutation } from 'react-query';
+import toggleFav from '@/app/lib/sync api/toggleFav'
 
 interface Favourite {
     type: 'project' | 'label' | 'filter';
@@ -22,58 +21,59 @@ function FiltersLabels() {
     const sideMenuAtive = useContext(sideMenuContext);
     const { tags, setTags } = useTagsContext();
     const [openModal, setOpenModal] = useState(false);
-    const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const { favourite, setFavourite } = useFavouriteContext();
     const setTask = useContext(SetTaskContext)
-    console.log(tags, 'tags');
 
     function isProjectInFavorites(label: string, favorites: Favourite[] | null) {
         return favorites?.some((favorite) => favorite.type === 'label' && favorite.name === label);
     }
 
 
-    let setTimeoutId;
-    let labelName: string;
+    const createLabelMutation = useMutation(toggleFav, {
+        retry: 3
+    });
 
-    let fetchTimeout: NodeJS.Timeout;
+    // Define a ref to store the timeouts for each label
+    const fetchTimeoutRef = useRef<{ [label: string]: NodeJS.Timeout | undefined }>({});
+
+    // Set a new timeout for this specific label and save the reference
 
 
-
-
-    const fetchTimeoutRef = useRef<null | NodeJS.Timeout>(null);
-
-    function handleFav(isFavorite: boolean, label: string) {
-        // Clear any previous timeout
-        if (fetchTimeoutRef.current) {
-            clearTimeout(fetchTimeoutRef.current);
+    async function handleFav(isFavorite: boolean, label: string) {
+        // Clear any previous timeout for the current label
+        if (fetchTimeoutRef.current[label]) {
+            clearTimeout(fetchTimeoutRef.current[label]!);
         }
-        // Set a new timeout for 1.5 seconds and save the reference
-        fetchTimeoutRef.current = setTimeout(() => {
+
+        fetchTimeoutRef.current[label] = setTimeout(async () => {
             if (isFavorite === true) {
                 // Handle DELETE request
-                fetch(`/api/app/favorite`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        name: label
-                    })
+                const response = await createLabelMutation.mutateAsync({
+                    isFavorite: true,
+                    name: label,
+                    type: 'label',
                 });
+
+                if (response.ok) {
+                    console.log(await response.json());
+                }
+
             } else {
                 // Handle POST request
-                fetch(`/api/app/favorite`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        type: 'label',
-                        name: label,
-                    })
+                const response = await createLabelMutation.mutateAsync({
+                    isFavorite: false,
+                    name: label,
+                    type: 'label',
                 });
+
+                if (response.ok) {
+                    console.log(await response.json());
+                }
             }
         }, 1500);
+
+
+
 
         // Optimistic UI state update (not delayed)
         if (isFavorite === true) {
@@ -84,19 +84,21 @@ function FiltersLabels() {
                 const updatedFav = prevFav.filter((fav) => !(fav.type === 'label' && fav.name === label));
                 return updatedFav;
             });
+
+
         } else {
             setFavourite((prevFav) => {
                 const existingFav = prevFav || [];
                 const newFav: Favourite = {
                     type: 'label',
-                    name: label
+                    name: label,
                 };
                 const updatedFav = [...existingFav, newFav];
                 return updatedFav;
             });
+
         }
     }
-
 
 
 

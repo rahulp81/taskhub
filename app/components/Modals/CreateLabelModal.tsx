@@ -5,14 +5,13 @@ import Switch from '@mui/material/Switch';
 import { FormControlLabel } from '@mui/material';
 import { useTagsContext } from '../context/TagsContext';
 import { useFavouriteContext } from '../context/FavouriteContextWrapper';
-
-const label = { inputProps: { 'aria-label': 'Color switch demo' } };
+import createLabel from '@/app/lib/sync api/createLabel'
+import { useMutation } from 'react-query';
 
 interface Favourite {
     type: 'project' | 'label' | 'filter';
     name: string
 }
-
 
 export default function CreateLabelDialog({ openModal, setOpenModal }
     : { openModal: boolean, setOpenModal: React.Dispatch<React.SetStateAction<boolean>> }) {
@@ -21,7 +20,33 @@ export default function CreateLabelDialog({ openModal, setOpenModal }
     const [name, setName] = useState('')
     const { tags, setTags } = useTagsContext();
     const [error, setError] = useState('');
-    const { favourite, setFavourite } = useFavouriteContext();
+    const { setFavourite } = useFavouriteContext();
+
+    const createLabelMutation = useMutation(createLabel, {
+        retry: 3
+    });
+
+    const handleCreateLabel = async (checked: boolean, name: string) => {
+        try {
+            const response = await createLabelMutation.mutateAsync({
+                name: name,
+                isFavorite: checked,
+            });
+
+            // Check if the response is okay
+            if (response && response.ok) {
+                console.log('Label created:', await response.json());
+            } else {
+                // Handle the case where the response indicates an error
+                console.error('Failed to create label. Unexpected response:', response);
+            }
+        } catch (error) {
+            console.error('Failed to create label:', error);
+        }
+    };
+
+
+
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setChecked(event.target.checked);
@@ -93,7 +118,6 @@ export default function CreateLabelDialog({ openModal, setOpenModal }
                                     onClick={() => {
                                         // Check if a project with the same name already exists
                                         const labelExists = tags?.includes(name);
-
                                         if (!labelExists) {
                                             setTags((prevTags) => {
                                                 const prevLabels = prevTags || [];
@@ -110,31 +134,11 @@ export default function CreateLabelDialog({ openModal, setOpenModal }
                                                     const updatedFav = [...currentFav, newFav]
                                                     return updatedFav
                                                 })
-                                                fetch(`/api/app/label`, {
-                                                    method: 'POST',
-                                                    headers: {
-                                                        'Content-Type': 'application/json'
-                                                    },
-                                                    body: JSON.stringify({
-                                                        name: name,
-                                                        isFavorite: true
-                                                    })
-                                                })
-                                            } else {
-                                                fetch(`/api/app/label`, {
-                                                    method: 'POST',
-                                                    headers: {
-                                                        'Content-Type': 'application/json'
-                                                    },
-                                                    body: JSON.stringify({
-                                                        name: name,
-                                                        isFavorite: false
-                                                    })
-                                                })
                                             }
                                             setOpenModal(false);
                                             setName('');
-                                            setError('')
+                                            setChecked(false)
+                                            handleCreateLabel(checked, name);
                                         } else {
                                             setError('A Label with same name already exists!.');
                                         }
