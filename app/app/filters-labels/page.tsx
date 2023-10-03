@@ -1,5 +1,4 @@
 "use client"
-
 import { useContext, useState } from 'react';
 import sideMenuContext from '../../components/context/sideMenuContext'
 import { useTagsContext } from '@/app/components/context/TagsContext';
@@ -11,6 +10,8 @@ import Tags from './Tags';
 import { useRef } from 'react';
 import { useMutation } from 'react-query';
 import toggleFav from '@/app/lib/sync api/toggleFav'
+import deleteLabel from '@/app/lib/sync api/deleteLabel'
+import { useSyncContext } from '@/app/components/context/SyncContext';
 
 interface Favourite {
     type: 'project' | 'label' | 'filter';
@@ -23,14 +24,15 @@ function FiltersLabels() {
     const [openModal, setOpenModal] = useState(false);
     const { favourite, setFavourite } = useFavouriteContext();
     const setTask = useContext(SetTaskContext)
+    const { setSync } = useSyncContext()
 
     function isProjectInFavorites(label: string, favorites: Favourite[] | null) {
         return favorites?.some((favorite) => favorite.type === 'label' && favorite.name === label);
     }
 
 
-    const createLabelMutation = useMutation(toggleFav, {
-        retry: 3
+    const favMutation = useMutation(toggleFav, {
+        retry: 5
     });
 
     // Define a ref to store the timeouts for each label
@@ -47,30 +49,98 @@ function FiltersLabels() {
 
         fetchTimeoutRef.current[label] = setTimeout(async () => {
             if (isFavorite === true) {
-                // Handle DELETE request
-                const response = await createLabelMutation.mutateAsync({
-                    isFavorite: true,
-                    name: label,
-                    type: 'label',
-                });
+                // const response = await favMutation.mutateAsync({
+                //     isFavorite: true,
+                //     name: label,
+                //     type: 'label',
+                // });
 
-                if (response.ok) {
-                    console.log(await response.json());
-                }
+                setSync({
+                    type: 'fav_remove',
+                    command: {
+                        name: label,
+                        type: 'label',
+                    }
+                })
+
+                // setSync((prevState: any) => {
+                //     if (prevState) {
+                //         const syncs = [...prevState];
+                //         syncs.push({
+                //             type: 'label_remove',
+                //             command: {
+                //                 name: label,
+                //                 type: 'label',
+                //             }
+                //         })
+                //         return syncs
+                //     } else {
+                //         const syncs = [{
+                //             type: 'label_remove',
+                //             command: {
+                //                 name: label,
+                //                 type: 'label',
+                //             }
+                //         }]
+                //         return syncs
+                //     }
+
+
+
+
+
+
+                // })
+
+
+                // if (response.ok) {
+                //     console.log(await response.json());
+                // }
 
             } else {
-                // Handle POST request
-                const response = await createLabelMutation.mutateAsync({
-                    isFavorite: false,
-                    name: label,
-                    type: 'label',
-                });
+                // const response = await favMutation.mutateAsync({
+                //     isFavorite: false,
+                //     name: label,
+                //     type: 'label',
+                // });
 
-                if (response.ok) {
-                    console.log(await response.json());
-                }
+                // setSync((prevState: any) => {
+                //     if (prevState) {
+                //         const syncs = [...prevState];
+                //         syncs.push({
+                //             type: 'label_add',
+                //             command: {
+                //                 name: label,
+                //                 type: 'label',
+                //             }
+                //         })
+                //         return syncs
+                //     } else {
+                //         const syncs = [{
+                //             type: 'label_add',
+                //             command: {
+                //                 name: label,
+                //                 type: 'label',
+                //             }
+                //         }]
+                //         return syncs
+                //     }
+
+                // })
+
+                setSync({
+                    type: 'fav_add',
+                    command: {
+                        name: label,
+                        type: 'label',
+                    }
+                })
+
+                // if (response.ok) {
+                //     console.log(await response.json());
+                // }
             }
-        }, 1500);
+        }, 1200);
 
 
 
@@ -101,8 +171,11 @@ function FiltersLabels() {
     }
 
 
+    const deleteLabelMutation = useMutation(deleteLabel, {
+        retry: 5
+    });
 
-    function handleDeleteLabel(label: string) {
+    async function handleDeleteLabel(label: string) {
         setTags((prevLabels) => {
             if (prevLabels) {
                 const updatedLabels = prevLabels.filter(
@@ -112,16 +185,6 @@ function FiltersLabels() {
             }
             return prevLabels;
         });
-
-        fetch(`/api/app/label`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name: label,
-            })
-        })
 
         setFavourite((prevFav) => {
             if (prevFav) {
@@ -150,6 +213,17 @@ function FiltersLabels() {
             }
             return prevTask;
         });
+
+        const response = await deleteLabelMutation.mutateAsync({
+            name: label,
+            isFavorite: isProjectInFavorites(label, favourite) as boolean
+        })
+
+        if (response.ok) {
+            console.log(`Delete label : ${label}`);
+        } else {
+            console.log(await response.json())
+        }
 
     }
 

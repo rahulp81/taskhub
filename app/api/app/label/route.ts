@@ -129,8 +129,8 @@ export async function DELETE(req: Request) {
 
       if (existingFavorites) {
         existingFavorites.favorites = existingFavorites.favorites.filter(
-          (fav: { name: string; type: string }) =>
-            fav.type == "label" && fav.name == name
+          (fav: { name: string , type: string }) =>
+            !(fav.type == "label" && fav.name == name)
         );
         await existingFavorites.save();
       }
@@ -147,7 +147,7 @@ export async function DELETE(req: Request) {
     }
   } catch (error) {
     return NextResponse.json(
-      { error: "Failed to delete project / tasks" },
+      { error: `Failed to delete tag ${error}`},
       { status: 500 }
     );
   }

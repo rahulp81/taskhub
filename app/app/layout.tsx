@@ -20,6 +20,7 @@ import MyPopover from "../components/productivity/popover"
 import ProfileDropDown from "../components/profile/ProfileDropDown"
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import { SyncProvider } from "../components/context/SyncContext"
 
 const queryClient = new QueryClient();
 
@@ -109,30 +110,31 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
       <main className={`flex grow justify-center main-container menu-open ${sideMenuActive ? 'active' : ''}`}>
         <div className="max-w-[1800px] flex flex-row  w-full">
           <SideMenuContext.Provider value={sideMenuActive}>
-            <TaskContextProvider>
-              <TagsProvider >
-                <ProjectProvider>
-                  <FavouriteProvider>
-                    <CompletedTaskWrapper>
-                      {/* Components */}
-                      <SideMenu active={sideMenuActive} />
-                      <AddTaskModal openModal={addTaskModal} setOpenModal={toggleAddTaskModal} />
-                      <QueryClientProvider client={queryClient}>
-                        {children}
-                      </QueryClientProvider>
-                      <MyPopover anchorEl={anchorEl} onClose={handleClose} open={open} />
-                      <ProfileDropDown anchorEl={anchorElProfile} onClose={handleCloseProfile} open={openProfile} />
-                      <ToastContainer position="bottom-left" autoClose={2000} theme="dark" />
-                      {/* Components */}
-                    </CompletedTaskWrapper>
-                  </FavouriteProvider>
-                </ProjectProvider>
-              </TagsProvider>
-            </TaskContextProvider>
+            <QueryClientProvider client={queryClient}>
+              <SyncProvider>
+                <TaskContextProvider>
+                  <TagsProvider >
+                    <ProjectProvider>
+                      <FavouriteProvider>
+                        <CompletedTaskWrapper>
+                          {/* Components */}
+                          <SideMenu active={sideMenuActive} />
+                          <AddTaskModal openModal={addTaskModal} setOpenModal={toggleAddTaskModal} />
+                          {children}
+                          <MyPopover anchorEl={anchorEl} onClose={handleClose} open={open} />
+                          <ProfileDropDown anchorEl={anchorElProfile} onClose={handleCloseProfile} open={openProfile} />
+                          <ToastContainer position="bottom-left" autoClose={1500} theme="dark" />
+                          {/* Components */}
+                        </CompletedTaskWrapper>
+                      </FavouriteProvider>
+                    </ProjectProvider>
+                  </TagsProvider>
+                </TaskContextProvider>
+              </SyncProvider>
+            </QueryClientProvider>
           </SideMenuContext.Provider>
         </div>
       </main>
-
     </>
   )
 }

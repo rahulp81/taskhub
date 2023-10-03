@@ -10,7 +10,7 @@ export async function POST(req: Request) {
 
   if (!session) {
     return NextResponse.json(
-      { error: "User not autheticated" },
+      { error: "User not authenticated" },
       { status: 403 }
     );
   }
@@ -22,9 +22,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
-  const existingFavorites = await FavoritesModel.findOne({ user_id: user._id });
-
   try {
+    // Acquire the lock before accessing the critical section.
+
+    const existingFavorites = await FavoritesModel.findOne({
+      user_id: user._id,
+    });
+
     if (!existingFavorites) {
       const favorite = new FavoritesModel({
         user_id: user._id,
@@ -32,13 +36,12 @@ export async function POST(req: Request) {
       });
       await favorite.save();
       return NextResponse.json({
-        success: "Successfully new Favorites created &  added",
+        success: "Successfully new Favorites created & added",
       });
     } else {
-      const preExisting = existingFavorites.favorites.find(
-        (fav: { name: string; type: string }) => {
-          return fav.name === name && fav.type === "label";
-        }
+      const preExisting = await existingFavorites.favorites.find(
+        (fav: { name: string; type: string }) =>
+          fav.name === name && fav.type === "label"
       );
 
       if (!preExisting) {
@@ -46,7 +49,7 @@ export async function POST(req: Request) {
         await existingFavorites.save();
         return NextResponse.json({ success: "Successfully Favorites updated" });
       } else {
-        return NextResponse.json({ success: " Favorites already exist" });
+        return NextResponse.json({ success: "Favorites already exist" });
       }
     }
   } catch (error) {
@@ -64,7 +67,7 @@ export async function DELETE(req: Request) {
 
   if (!session) {
     return NextResponse.json(
-      { error: "User not autheticated" },
+      { error: "User not authenticated" },
       { status: 403 }
     );
   }
@@ -76,9 +79,13 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
-  const existingFavorites = await FavoritesModel.findOne({ user_id: user._id });
-
   try {
+    // Acquire the lock before accessing the critical section (DELETE route).
+
+    const existingFavorites = await FavoritesModel.findOne({
+      user_id: user._id,
+    });
+
     if (!existingFavorites) {
       return NextResponse.json({
         success: "No Favorites to Delete",

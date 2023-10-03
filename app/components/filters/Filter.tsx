@@ -1,7 +1,7 @@
 "use client"
-import React from 'react'
 import Link from 'next/link'
 import { useFavouriteContext } from '../context/FavouriteContextWrapper';
+import { useSyncContext } from '../context/SyncContext';
 
 interface Favourite {
     type: 'project' | 'label' | 'filter';
@@ -10,7 +10,7 @@ interface Favourite {
 
 function Filter() {
     const { favourite, setFavourite } = useFavouriteContext();
-
+    const {setSync} = useSyncContext()
 
     function isProjectInFavorites(filter: string, favorites: Favourite[] | null) {
         return favorites?.some((favorite) => favorite.type === 'filter' && favorite.name === filter);
@@ -32,14 +32,12 @@ function Filter() {
                 return updatedFav
             })
 
-            fetch(`/api/app/favorite`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: filter
-                })
+            setSync({
+                type: 'fav_remove',
+                command: {
+                    name: filter,
+                    type: 'filter',
+                }
             })
 
         } else {
@@ -53,15 +51,12 @@ function Filter() {
                 return updatedFav
             })
 
-            fetch(`/api/app/favorite`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    type: 'filter',
+            setSync({
+                type: 'fav_add',
+                command: {
                     name: filter,
-                })
+                    type: 'filter',
+                }
             })
 
         }

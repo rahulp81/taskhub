@@ -1,18 +1,18 @@
-const createLabel = async ({ name, isFavorite,command }) => {
+const deleteLabel = async ({ name ,isFavorite }) => {
   const response = await fetch("/api/sync", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      name,
-      command,
-      isFavorite,
+      name: name,
+      command : 'label_remove',
+      isFavorite : isFavorite
     }),
   });
 
   if (!response.ok) {
-    throw new Error("Failed to create label : ",name);
+    throw new Error("Failed to delete label");
   }
 
   try {
@@ -22,4 +22,4 @@ const createLabel = async ({ name, isFavorite,command }) => {
   }
 };
 
-export default createLabel;
+export default deleteLabel;

@@ -23,12 +23,12 @@ function Label({ setLabels, labels }: { labels: string[] | null, setLabels: Reac
         : tags;
 
 
-
-    const AddLabel = async (checked: boolean, name: string) => {
+    const AddLabel = (async ( name: string) => {
         try {
             const response = await createLabelMutation.mutateAsync({
                 name: name,
-                isFavorite: checked,
+                isFavorite: false,
+                command : 'label_add'
             });
 
             // Check if the response is okay
@@ -41,8 +41,8 @@ function Label({ setLabels, labels }: { labels: string[] | null, setLabels: Reac
         } catch (error) {
             console.error('Failed to create label:', error);
         }
-    };
-
+    }
+    )
 
 
     //For Current Task aka choosing from available tags
@@ -72,7 +72,9 @@ function Label({ setLabels, labels }: { labels: string[] | null, setLabels: Reac
         updatedTags?.push(tagsSearch)
         console.log(updatedTags);
         setTags(updatedTags);
-        AddLabel(false, tagsSearch) //mutation function
+        setTimeout(() => {
+            AddLabel(tagsSearch)
+        }, 500);  //mutation function
         const newTemp = [...labels as string[]];
         newTemp.push(tagsSearch);
         setLabels(newTemp)

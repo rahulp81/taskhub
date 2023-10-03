@@ -23,12 +23,13 @@ export default function CreateLabelDialog({ openModal, setOpenModal }
     const { setFavourite } = useFavouriteContext();
 
     const createLabelMutation = useMutation(createLabel, {
-        retry: 3
+        retry: 5
     });
 
     const handleCreateLabel = async (checked: boolean, name: string) => {
         try {
             const response = await createLabelMutation.mutateAsync({
+                command : 'label_add',
                 name: name,
                 isFavorite: checked,
             });

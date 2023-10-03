@@ -32,7 +32,7 @@ function addTask({today,project,tags,priority}: addTask) {
 
   const setTask = useContext(SetTaskContext);
   const currentLabels =
-    <span className='gap-1 flex'>
+    <span className='gap-1 flex flex-wrap border-2'>
       {labels?.map((label, index) => (
         <span className='bg-blue-100 rounded px-1' key={index}>
           #{label}
@@ -123,7 +123,7 @@ function addTask({today,project,tags,priority}: addTask) {
             <div className='flex  justify-between pr-5 '>
               <input type="text" name='task-name' placeholder='Task Name' className='grow placeholder:font-medium font-medium'
                 value={`${name}`} onChange={(e) => { setName(e.target.value) }} />
-              <p>{currentLabels}</p>
+              <p className=''>{currentLabels}</p>
             </div>
 
             <input type="text" name='task-description' placeholder='Description' className='placeholder:font-normal ml-0.5 text-[14px] placeholder:text-sm ' />
