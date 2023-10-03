@@ -2,8 +2,8 @@
 import UseClickOutside from '@/app/components/hooks/UseClickOutside'
 import React, { useContext, useRef, useState } from 'react'
 import { useTagsContext } from '../context/TagsContext';
-import createLabel from '@/app/lib/sync api/createLabel'
-import { useMutation } from 'react-query';
+import { useSyncContext } from '../context/SyncContext';
+
 
 function Label({ setLabels, labels }: { labels: string[] | null, setLabels: React.Dispatch<React.SetStateAction<string[] | null>> }) {
     const [active, setIsActive] = useState(false);
@@ -12,37 +12,27 @@ function Label({ setLabels, labels }: { labels: string[] | null, setLabels: Reac
     const dropdownRef = useRef<HTMLDivElement | null>(null);
     // const additionalRef = useRef<HTMLButtonElement | null>(null);
     const { tags, setTags } = useTagsContext();
+    const {setSync} = useSyncContext();
+
     UseClickOutside({ buttonRef, dropdownRef, setIsActive })
 
-    const createLabelMutation = useMutation(createLabel, {
-        retry: 3
-    });
+
 
     const filteredLabels = tagsSearch
         ? tags?.filter((label) => label.toLowerCase().includes(tagsSearch.toLowerCase()))
         : tags;
 
 
-    const AddLabel = (async ( name: string) => {
-        try {
-            const response = await createLabelMutation.mutateAsync({
+    const AddLabel = (name: string) => {
+        setSync({
+            type: 'label',
+            action : 'POST',
+            command: {
                 name: name,
-                isFavorite: false,
-                command : 'label_add'
-            });
-
-            // Check if the response is okay
-            if (response && response.ok) {
-                console.log('Label created:', await response.json());
-            } else {
-                // Handle the case where the response indicates an error
-                console.error('Failed to create label. Unexpected response:', response);
+                checked: false,
             }
-        } catch (error) {
-            console.error('Failed to create label:', error);
-        }
+        })
     }
-    )
 
 
     //For Current Task aka choosing from available tags
@@ -74,7 +64,7 @@ function Label({ setLabels, labels }: { labels: string[] | null, setLabels: Reac
         setTags(updatedTags);
         setTimeout(() => {
             AddLabel(tagsSearch)
-        }, 500);  //mutation function
+        }, 500);  //Sync function
         const newTemp = [...labels as string[]];
         newTemp.push(tagsSearch);
         setLabels(newTemp)

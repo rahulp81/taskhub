@@ -1,6 +1,7 @@
 import React, { useState, useContext, createContext, useEffect, useRef } from 'react';
 import { useMutation } from 'react-query';
 import toggleFav from '@/app/lib/sync api/toggleFav'
+import Label from '@/app/lib/sync api/Label';
 
 export const SyncContext = createContext<any>(null);
 
@@ -16,49 +17,49 @@ export function useSyncContext() {
 
 export function SyncProvider({ children }: { children: React.ReactNode }) {
     const [sync, setSync] = useState<any>({});
-    const queueRef = useRef<any>([]);
+    const queRef = useRef<any>([]);
     const processing = useRef(false);
     const favMutation = useMutation(toggleFav, {
         retry: 5
     })
+    const LabelMutation = useMutation(Label, {
+        retry: 5
+    });
+
 
     useEffect(() => {
         if (Object.keys(sync).length > 0) {
-
-            queueRef.current.push(sync);
+            console.log('new sync is :  ', sync);
+            queRef.current.push(sync);
             processQueue();
         }
     }, [sync]);
 
     const processQueue = async () => {
-        if (queueRef.current.length > 0 && !processing.current) {
+        if (queRef.current.length > 0 && !processing.current) {
             processing.current = true;
-            const currentTask = queueRef.current[0]; // Get the first task in the queue
 
             try {
-                // Perform the task here, for example, making an API call
-                console.log('Processing task:', currentTask);
+                const currentTask = queRef.current.shift();
+                console.log('current task,', currentTask);
 
-                // After processing, remove the task from the queue
-                const currentFavoriteTask = queueRef.current.shift();
+                if (currentTask.type == 'fav_add' || currentTask.type == 'fav_remove') {
+                    const response = await favMutation.mutateAsync({
+                        isFavorite: currentTask.type == 'fav_add' ? false : true,
+                        name: currentTask.command.name,
+                        type: currentTask.command.type,
+                    });
+                    console.log(await response.json());
+                }
 
-                // const response = await fetch(`/api/app/favorite`, {
-                //     method: currentFavoriteTask.type === 'fav_add' ? 'POST' : 'DELETE',
-                //     body: JSON.stringify({
-                //         name: currentFavoriteTask.command.name,
-                //         type: currentFavoriteTask.command.type,
-                //     }),
-                // });
-
-                const response = await favMutation.mutateAsync({
-                    isFavorite: currentFavoriteTask.type == 'fav_add' ?  false : true,
-                    name: currentFavoriteTask.command.name,
-                    type: currentFavoriteTask.command.type,
-                });
-
-
-                console.log(await response.json());
-
+                if (currentTask.type == 'label') {
+                    const response = await LabelMutation.mutateAsync({
+                        action: currentTask.action,
+                        name: currentTask.command.name,
+                        isFavorite: currentTask.command.checked
+                    });
+                    console.log(await response.json());
+                }
 
             } catch (error) {
                 console.error('Error processing task:', error);

@@ -50,7 +50,7 @@ export async function POST(req: Request) {
       });
 
       if (existingFavorites) {
-        const preExisting = existingFavorites.favorites.find(
+        const preExisting = await existingFavorites.favorites.find(
           (fav: { name: string; type: string }) => {
             return fav.name === name && fav.type === "label";
           }
@@ -129,7 +129,7 @@ export async function DELETE(req: Request) {
 
       if (existingFavorites) {
         existingFavorites.favorites = existingFavorites.favorites.filter(
-          (fav: { name: string , type: string }) =>
+          (fav: { name: string; type: string }) =>
             !(fav.type == "label" && fav.name == name)
         );
         await existingFavorites.save();
@@ -147,7 +147,7 @@ export async function DELETE(req: Request) {
     }
   } catch (error) {
     return NextResponse.json(
-      { error: `Failed to delete tag ${error}`},
+      { error: `Failed to delete tag ${error}` },
       { status: 500 }
     );
   }

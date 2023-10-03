@@ -23,8 +23,6 @@ export async function POST(req: Request) {
   }
 
   try {
-    // Acquire the lock before accessing the critical section.
-
     const existingFavorites = await FavoritesModel.findOne({
       user_id: user._id,
     });
@@ -80,8 +78,6 @@ export async function DELETE(req: Request) {
   }
 
   try {
-    // Acquire the lock before accessing the critical section (DELETE route).
-
     const existingFavorites = await FavoritesModel.findOne({
       user_id: user._id,
     });

@@ -1,12 +1,11 @@
-const createLabel = async ({ name, isFavorite,command }) => {
-  const response = await fetch("/api/sync", {
-    method: "POST",
+const Label = async ({ action,name, isFavorite }) => {
+  const response = await fetch("/api/app/label", {
+    method: action,
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
       name,
-      command,
       isFavorite,
     }),
   });
@@ -22,4 +21,4 @@ const createLabel = async ({ name, isFavorite,command }) => {
   }
 };
 
-export default createLabel;
+export default Label;

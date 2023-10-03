@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { useFavouriteContext } from '../context/FavouriteContextWrapper';
 import Link from 'next/link';
+import { useSyncContext } from '../context/SyncContext';
+
 
 function Favorites() {
     const [isActive, setIsActive] = useState(true);
     const { favourite, setFavourite } = useFavouriteContext();
+    const { setSync } = useSyncContext();
+
     const togglesetIsActive = () => {
         setIsActive(!isActive);
     };
@@ -17,18 +21,18 @@ function Favorites() {
         name: string
     }
 
-    function removeFavoriteByName(nameToRemove: string) {
+    function removeFavoriteByName(nameToRemove: string, type: string) {
         if (favourite !== null) {
-            const updatedFavorites = favourite.filter((fav) => fav.name !== nameToRemove);
+            console.log('called');
+            
+            const updatedFavorites = favourite.filter((fav) => !(fav.type == type && fav.name == nameToRemove));
             setFavourite(updatedFavorites);
-            fetch(`/api/app/favorite`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: nameToRemove
-                })
+            setSync({
+                type: 'fav_remove',
+                command: {
+                    name: nameToRemove,
+                    type: type,
+                }
             })
         }
     }
@@ -120,7 +124,7 @@ function Favorites() {
                                 )}
 
 
-                                <div className='p-1 hover:bg-stone-300 rounded' onClick={() => removeFavoriteByName(fav.name)}>
+                                <div className='p-1 hover:bg-stone-300 rounded' onClick={() => removeFavoriteByName(fav.name, fav.type)}>
                                     <svg xmlns="http://www.w3.org/2000/svg" className=' ' width="16" height="16" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#000000" fill="none" strokeLinecap="round" strokeLinejoin="round">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                         <path d="M3 3l18 18" />

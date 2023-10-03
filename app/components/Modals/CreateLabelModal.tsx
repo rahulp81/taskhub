@@ -5,8 +5,7 @@ import Switch from '@mui/material/Switch';
 import { FormControlLabel } from '@mui/material';
 import { useTagsContext } from '../context/TagsContext';
 import { useFavouriteContext } from '../context/FavouriteContextWrapper';
-import createLabel from '@/app/lib/sync api/createLabel'
-import { useMutation } from 'react-query';
+import { useSyncContext } from '../context/SyncContext';
 
 interface Favourite {
     type: 'project' | 'label' | 'filter';
@@ -21,33 +20,19 @@ export default function CreateLabelDialog({ openModal, setOpenModal }
     const { tags, setTags } = useTagsContext();
     const [error, setError] = useState('');
     const { setFavourite } = useFavouriteContext();
+    const {setSync}  = useSyncContext();
 
-    const createLabelMutation = useMutation(createLabel, {
-        retry: 5
-    });
 
-    const handleCreateLabel = async (checked: boolean, name: string) => {
-        try {
-            const response = await createLabelMutation.mutateAsync({
-                command : 'label_add',
+    const handleCreateLabel =  (checked: boolean, name: string) => {
+        setSync({
+            type: 'label',
+            action : 'POST',
+            command: {
                 name: name,
-                isFavorite: checked,
-            });
-
-            // Check if the response is okay
-            if (response && response.ok) {
-                console.log('Label created:', await response.json());
-            } else {
-                // Handle the case where the response indicates an error
-                console.error('Failed to create label. Unexpected response:', response);
+                checked: checked,
             }
-        } catch (error) {
-            console.error('Failed to create label:', error);
-        }
+        })
     };
-
-
-
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setChecked(event.target.checked);

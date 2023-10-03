@@ -8,9 +8,6 @@ import { useFavouriteContext } from '@/app/components/context/FavouriteContextWr
 import { SetTaskContext } from '@/app/components/context/taskContext';
 import Tags from './Tags';
 import { useRef } from 'react';
-import { useMutation } from 'react-query';
-import toggleFav from '@/app/lib/sync api/toggleFav'
-import deleteLabel from '@/app/lib/sync api/deleteLabel'
 import { useSyncContext } from '@/app/components/context/SyncContext';
 
 interface Favourite {
@@ -30,17 +27,10 @@ function FiltersLabels() {
         return favorites?.some((favorite) => favorite.type === 'label' && favorite.name === label);
     }
 
-
-    const favMutation = useMutation(toggleFav, {
-        retry: 5
-    });
-
     // Define a ref to store the timeouts for each label
     const fetchTimeoutRef = useRef<{ [label: string]: NodeJS.Timeout | undefined }>({});
 
     // Set a new timeout for this specific label and save the reference
-
-
     async function handleFav(isFavorite: boolean, label: string) {
         // Clear any previous timeout for the current label
         if (fetchTimeoutRef.current[label]) {
@@ -49,11 +39,6 @@ function FiltersLabels() {
 
         fetchTimeoutRef.current[label] = setTimeout(async () => {
             if (isFavorite === true) {
-                // const response = await favMutation.mutateAsync({
-                //     isFavorite: true,
-                //     name: label,
-                //     type: 'label',
-                // });
 
                 setSync({
                     type: 'fav_remove',
@@ -63,71 +48,7 @@ function FiltersLabels() {
                     }
                 })
 
-                // setSync((prevState: any) => {
-                //     if (prevState) {
-                //         const syncs = [...prevState];
-                //         syncs.push({
-                //             type: 'label_remove',
-                //             command: {
-                //                 name: label,
-                //                 type: 'label',
-                //             }
-                //         })
-                //         return syncs
-                //     } else {
-                //         const syncs = [{
-                //             type: 'label_remove',
-                //             command: {
-                //                 name: label,
-                //                 type: 'label',
-                //             }
-                //         }]
-                //         return syncs
-                //     }
-
-
-
-
-
-
-                // })
-
-
-                // if (response.ok) {
-                //     console.log(await response.json());
-                // }
-
             } else {
-                // const response = await favMutation.mutateAsync({
-                //     isFavorite: false,
-                //     name: label,
-                //     type: 'label',
-                // });
-
-                // setSync((prevState: any) => {
-                //     if (prevState) {
-                //         const syncs = [...prevState];
-                //         syncs.push({
-                //             type: 'label_add',
-                //             command: {
-                //                 name: label,
-                //                 type: 'label',
-                //             }
-                //         })
-                //         return syncs
-                //     } else {
-                //         const syncs = [{
-                //             type: 'label_add',
-                //             command: {
-                //                 name: label,
-                //                 type: 'label',
-                //             }
-                //         }]
-                //         return syncs
-                //     }
-
-                // })
-
                 setSync({
                     type: 'fav_add',
                     command: {
@@ -135,15 +56,8 @@ function FiltersLabels() {
                         type: 'label',
                     }
                 })
-
-                // if (response.ok) {
-                //     console.log(await response.json());
-                // }
             }
-        }, 1200);
-
-
-
+        }, 500);
 
         // Optimistic UI state update (not delayed)
         if (isFavorite === true) {
@@ -154,8 +68,6 @@ function FiltersLabels() {
                 const updatedFav = prevFav.filter((fav) => !(fav.type === 'label' && fav.name === label));
                 return updatedFav;
             });
-
-
         } else {
             setFavourite((prevFav) => {
                 const existingFav = prevFav || [];
@@ -170,10 +82,6 @@ function FiltersLabels() {
         }
     }
 
-
-    const deleteLabelMutation = useMutation(deleteLabel, {
-        retry: 5
-    });
 
     async function handleDeleteLabel(label: string) {
         setTags((prevLabels) => {
@@ -214,20 +122,17 @@ function FiltersLabels() {
             return prevTask;
         });
 
-        const response = await deleteLabelMutation.mutateAsync({
-            name: label,
-            isFavorite: isProjectInFavorites(label, favourite) as boolean
-        })
-
-        if (response.ok) {
-            console.log(`Delete label : ${label}`);
-        } else {
-            console.log(await response.json())
-        }
+        setTimeout(() => {
+            setSync({
+                type: 'label',
+                action: 'DELETE',
+                command: {
+                    name: label
+                }
+            })
+        }, 510);
 
     }
-
-
 
 
     return (
@@ -247,7 +152,6 @@ function FiltersLabels() {
                                     <path d="M11 11V5H13V11H19V13H13V19H11V13H5V11H11Z" fill="black"></path>
                                 </svg>
                             </div>
-
                         </h2>
                         <ul className='flex flex-col gap-1 pl-2'>
                             {tags?.map((label) => {
@@ -258,11 +162,7 @@ function FiltersLabels() {
                                 );
                             })}
                         </ul>
-
-
                     </div>
-
-
                 </div>
             </main >
 
