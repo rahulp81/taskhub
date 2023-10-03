@@ -3,6 +3,7 @@
 import React, { useRef, useState } from 'react'
 import { useProjectContext } from '../context/ProjectContextWrapper';
 import UseClickOutside from '@/app/components/hooks/UseClickOutside';
+import { useSyncContext } from '../context/SyncContext';
 
 function Project({ taskProject, setTaskProject }: { taskProject: string | null, setTaskProject: React.Dispatch<React.SetStateAction<string | null>> }) {
     const [active, setIsActive] = useState(false);
@@ -10,6 +11,7 @@ function Project({ taskProject, setTaskProject }: { taskProject: string | null, 
     const { projects, setProjects } = useProjectContext() //Projects made by the user apart from inbox- which is deafault aka for uncategorized tasks
     const buttonRef = useRef<HTMLButtonElement | null>(null);
     const dropdownRef = useRef<HTMLDivElement | null>(null);
+    const {setSync} = useSyncContext();
     UseClickOutside({ buttonRef, dropdownRef, setIsActive })
 
 
@@ -19,22 +21,21 @@ function Project({ taskProject, setTaskProject }: { taskProject: string | null, 
     // <span className='ml-auto'>&#10004;</span>
 
     function handleCreateProject() {
-        fetch(`/api/app/project`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'text/plain'
-            },
-            body: JSON.stringify({
-                name : projectSearch,
-                isFavorite : false
-            })
-        })
 
         setProjects((prevProjects) => {
             const existingProjects = prevProjects || [];
             const updatedProjects = [...existingProjects, projectSearch];
             return updatedProjects;
         });
+
+        setSync({
+            type: 'project',
+            action: 'POST',
+            command: {
+                name: projectSearch,
+                isFavorite: false
+            }
+        })
 
         setTaskProject(projectSearch)
         // setIsActive(true);

@@ -2,10 +2,9 @@ import React, { useState, useContext, createContext, useEffect, useRef } from 'r
 import { useMutation } from 'react-query';
 import toggleFav from '@/app/lib/sync api/toggleFav'
 import Label from '@/app/lib/sync api/Label';
+import Project from '@/app/lib/sync api/project';
 
 export const SyncContext = createContext<any>(null);
-
-;
 
 export function useSyncContext() {
     const context = useContext(SyncContext);
@@ -25,6 +24,9 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
     const LabelMutation = useMutation(Label, {
         retry: 5
     });
+    const ProjectMutation = useMutation(Project,{
+        retry : 5
+    })
 
 
     useEffect(() => {
@@ -61,6 +63,18 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
                     console.log(await response.json());
                 }
 
+                if(currentTask.type == 'project'){
+                    const response = await ProjectMutation.mutateAsync({
+                        action: currentTask.action,
+                        name: currentTask.command.name,
+                        isFavorite: currentTask.command.isFavorite
+                    });
+                    console.log(await response.json());
+                }
+
+
+
+
             } catch (error) {
                 console.error('Error processing task:', error);
             } finally {
@@ -69,8 +83,6 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
             }
         }
     };
-
-
 
     return (
         <SyncContext.Provider value={{ sync, setSync }}>

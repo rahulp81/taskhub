@@ -7,6 +7,7 @@ import { SetTaskContext, TaskContext } from '../context/taskContext';
 import DeleteProjectDialog from '../Modals/DeleteProjectModal';
 import Link from 'next/link';
 import Project from './project';
+import { useSyncContext } from '../context/SyncContext';
 
 interface Favourite {
     type: 'project' | 'label' | 'filter';
@@ -20,6 +21,8 @@ function Board() {
     const { favourite, setFavourite } = useFavouriteContext();
     const tasks = useContext(TaskContext);
     const setTasks = useContext(SetTaskContext)
+
+    const { setSync } = useSyncContext();
 
     function isProjectInFavorites(project: string, favorites: Favourite[] | null) {
         return favorites?.some((favorite) => favorite.type === 'project' && favorite.name === project);
@@ -39,14 +42,12 @@ function Board() {
                 const updatedFav = prevFav.filter((fav) => !(fav.type == 'project' && fav.name == project));
                 return updatedFav
             })
-            fetch(`/api/app/favorite`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: project
-                })
+            setSync({
+                type: 'fav_remove',
+                command: {
+                    name: project,
+                    type: 'project',
+                }
             })
         } else {
             setFavourite((prevFav) => {
@@ -58,15 +59,12 @@ function Board() {
                 const updatedFav = [...existingFav, newFav]
                 return updatedFav
             })
-            fetch(`/api/app/favorite`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    type: 'project',
+            setSync({
+                type: 'fav_add',
+                command: {
                     name: project,
-                })
+                    type: 'project',
+                }
             })
         }
     }
@@ -82,17 +80,6 @@ function Board() {
             }
             return prevProjects;
         });
-
-
-        fetch(`/api/app/project`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                projectName: projectName
-            })
-        })
 
         //DB sync handled in api endpoint itself
         // Remove the project from the 'favorites' state
@@ -117,6 +104,15 @@ function Board() {
             }
             return prevTasks;
         });
+
+        setSync({
+            type: 'project',
+            action: 'DELETE',
+            command: {
+                name: projectName,
+            }
+        })
+
     }
 
 
@@ -141,17 +137,14 @@ function Board() {
             return updatedProjects;
         })
 
-        fetch(`/api/app/project`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
+        setSync({
+            type: 'project',
+            action: 'POST',
+            command: {
                 name: name,
                 isFavorite: checked
-            })
+            }
         })
-
     }
 
     const arrowClass = isActive ? 'rotate-90' : '';
