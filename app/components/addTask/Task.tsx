@@ -13,6 +13,7 @@ import Project from '../projects/Project';
 import DeleteDialog from '../Modals/DeleteModal';
 import { useCompletedTaskContext } from '../context/CompletedTaskContextWrapper';
 import { toast } from 'react-toastify';
+import { useSyncContext } from '../context/SyncContext';
 
 interface TaskProps {
   task: Task;
@@ -43,13 +44,14 @@ export default function Task({ task }: TaskProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const doneButtonRef = useRef<HTMLButtonElement | null>(null);
   const { completedTask, setCompletedTask } = useCompletedTaskContext()
+  const { setSync } = useSyncContext();
 
   // For Editor
   const [name, setName] = useState(task.name);
   const [description, setDescription] = useState(task.description);
 
   const currentLabels =
-    <span className='gap-1 flex'>
+    <span className='gap-1 flex flex-wrap'>
       {updatedLabels?.map((label, index) => (
         <span className='bg-blue-100 rounded px-1' key={index}>
           #{label}
@@ -95,37 +97,38 @@ export default function Task({ task }: TaskProps) {
       }
     }
     updateTask(updatedTasks);
-    fetch(`/api/app/task`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        id: id,
-        name: name,
-        description: description,
-        priority: priority,
-        due: due,
-        labels: tags,
-        project: project,
-      })
+
+    setSync({
+      type: 'task',
+      action: 'PATCH',
+      command: {
+        taskDetail: {
+          id: id,
+          name: name,
+          description: description,
+          priority: priority,
+          due: due,
+          labels: tags,
+          project: project,
+        }
+      }
     })
+
     // const form = e.currentTarget as HTMLFormElement;
     setIsEditing(!isEditing)
   }
 
   function deleteTask() {
     const updatedTasks = tasks.filter((t) => t.id !== task.id);
-    fetch(`/api/app/task`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        taskId: task.id
-      })
-    })
     updateTask(updatedTasks);
+    setSync({
+      type: 'task',
+      action: 'DELETE',
+      command: {
+        taskId: task.id
+      }
+    })
+
   }
 
   async function handleDoneClick() {
@@ -149,17 +152,16 @@ export default function Task({ task }: TaskProps) {
         return [completedTaskItem];
       });
 
-      fetch(`/api/app/completedTask`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          completedTaskItem : completedTaskItem
-        })
+      setSync({
+        type: 'completedTask',
+        command: {
+          completedTaskItem: completedTaskItem,
+          taskId: task.id
+        }
       })
 
-      deleteTask();
+      const updatedTasks = tasks.filter((t) => t.id !== task.id);
+      updateTask(updatedTasks);
       toast.success(
         <p>
           Task {name} completed

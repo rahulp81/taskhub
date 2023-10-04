@@ -17,8 +17,7 @@ function Project({ taskProject, setTaskProject }: { taskProject: string | null, 
 
     const filteredProjects = projectSearch ? projects?.filter((project) => project.toLowerCase().includes(projectSearch.toLowerCase()))
         : projects;
-    console.log(taskProject);
-    // <span className='ml-auto'>&#10004;</span>
+  
 
     function handleCreateProject() {
 

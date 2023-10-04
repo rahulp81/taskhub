@@ -3,6 +3,7 @@ import dbConnect from "@/app/lib/dbConnect";
 import CompletedTaskModel from "@/app/models/completedTask.model";
 import UserModel from "@/app/models/users.model";
 import { getServerSession } from "next-auth";
+import taskModels from "@/app/models/task.models";
 
 export async function POST(req: Request) {
   await dbConnect();
@@ -14,7 +15,7 @@ export async function POST(req: Request) {
       { status: 403 }
     );
   }
-  const { completedTaskItem } = await req.json();
+  const { completedTaskItem, taskId } = await req.json();
 
   const user = await UserModel.findOne({ email: session?.user?.email });
 
@@ -32,7 +33,8 @@ export async function POST(req: Request) {
   });
 
   try {
-    const savedTask = await completedTask.save();
+    await completedTask.save();
+    await taskModels.findOneAndDelete({ id: taskId });
     return NextResponse.json({
       success: "Successfully added task to  completed",
     });

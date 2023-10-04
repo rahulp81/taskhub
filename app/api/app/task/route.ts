@@ -14,7 +14,9 @@ export async function POST(req: Request) {
       { status: 403 }
     );
   }
-  const taskDetail = await req.json();
+  const { taskDetail } = await req.json();
+  console.log(taskDetail, "task is  ");
+
   const { name, description, id, priority, due, labels, project } = taskDetail;
 
   const user = await UserModel.findOne({ email: session?.user?.email });
@@ -35,7 +37,7 @@ export async function POST(req: Request) {
   });
 
   try {
-    const savedTask = await task.save();
+    await task.save();
     return NextResponse.json({ success: "Successfully Task Saved" });
   } catch (error) {
     // Handle any errors that occur during task creation
@@ -44,7 +46,7 @@ export async function POST(req: Request) {
   }
 }
 
-export async function PUT(req: Request) {
+export async function PATCH(req: Request) {
   await dbConnect();
   const session = await getServerSession();
 
@@ -54,7 +56,7 @@ export async function PUT(req: Request) {
       { status: 403 }
     );
   }
-  const taskDetail = await req.json();
+  const { taskDetail } = await req.json();
   const { name, description, id, priority, due, labels, project } = taskDetail;
 
   const user = await UserModel.findOne({ email: session?.user?.email });
@@ -98,7 +100,9 @@ export async function DELETE(req: Request) {
       { status: 403 }
     );
   }
+
   const { taskId } = await req.json();
+
   const user = await UserModel.findOne({ email: session?.user?.email });
 
   if (!user) {
@@ -106,7 +110,7 @@ export async function DELETE(req: Request) {
   }
 
   try {
-    const task = await TaskModel.findOneAndDelete({id : taskId})
+    const task = await TaskModel.findOneAndDelete({ id: taskId });
     if (!task) {
       return NextResponse.json({ error: "Task not found" }, { status: 404 });
     }

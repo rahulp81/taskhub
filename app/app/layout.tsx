@@ -55,8 +55,6 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
   const idProfile = openProfile ? 'simple-popover' : undefined;
 
 
-  console.log(session);
-
   if (!session) {
     redirect('/login')
   }

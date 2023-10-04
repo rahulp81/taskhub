@@ -8,6 +8,7 @@ import { useTagsContext } from '../context/TagsContext';
 import Project from '../projects/Project';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
+import { useSyncContext } from '../context/SyncContext';
 
 const todaysDate = new Date();
 todaysDate.setHours(0, 0, 0, 0);
@@ -28,11 +29,12 @@ function addTask({today,project,tags,priority}: addTask) {
   const [labels, setLabels] = useState<string[] | null>([])
   const [taskproject, setTaskProject] = useState<string | null>(project ? project : 'Inbox')
 
+  const {setSync} = useSyncContext();
 
 
   const setTask = useContext(SetTaskContext);
   const currentLabels =
-    <span className='gap-1 flex flex-wrap border-2'>
+    <span className='gap-1 flex flex-wrap'>
       {labels?.map((label, index) => (
         <span className='bg-blue-100 rounded px-1' key={index}>
           #{label}
@@ -58,25 +60,13 @@ function addTask({today,project,tags,priority}: addTask) {
       </p>
     );
 
-    fetch('/api/app/task',{
-      method: 'POST',
-      headers : {
-        'Content-Type': 'application/json',
-      },
-      body : JSON.stringify(taskDetail)
-    }).then((response) => {
-      if (response.ok) {
-       console.log('task added to backend');
-      } else {
-       setTask((prevTasks) => {
-        const revertTask = prevTasks.filter((t)=> !(t.id == id))
-        return revertTask
-       } )
+    setSync({
+      type : 'task',
+      action  : 'POST',
+      command : {
+        taskDetail : taskDetail
       }
     })
-    .catch((error) => {
-      console.error(error);
-    });
 
     const form = e.currentTarget as HTMLFormElement;
     setTaskPriority('P4');

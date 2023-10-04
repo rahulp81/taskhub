@@ -3,6 +3,9 @@ import { useMutation } from 'react-query';
 import toggleFav from '@/app/lib/sync api/toggleFav'
 import Label from '@/app/lib/sync api/Label';
 import Project from '@/app/lib/sync api/project';
+import Task from '@/app/lib/sync api/task';
+import CompletedTask from '@/app/lib/sync api/completedTask';
+import DeleteTask from '@/app/lib/sync api/deleteTask'
 
 export const SyncContext = createContext<any>(null);
 
@@ -18,14 +21,24 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
     const [sync, setSync] = useState<any>({});
     const queRef = useRef<any>([]);
     const processing = useRef(false);
+
     const favMutation = useMutation(toggleFav, {
         retry: 5
     })
     const LabelMutation = useMutation(Label, {
         retry: 5
     });
-    const ProjectMutation = useMutation(Project,{
-        retry : 5
+    const ProjectMutation = useMutation(Project, {
+        retry: 5
+    })
+    const TaskMutation = useMutation(Task, {
+        retry: 5
+    })
+    const CompletedTaskMutation = useMutation(CompletedTask, {
+        retry: 5
+    })
+    const DeleteTaskMutation = useMutation(DeleteTask, {
+        retry: 5
     })
 
 
@@ -63,7 +76,7 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
                     console.log(await response.json());
                 }
 
-                if(currentTask.type == 'project'){
+                if (currentTask.type == 'project') {
                     const response = await ProjectMutation.mutateAsync({
                         action: currentTask.action,
                         name: currentTask.command.name,
@@ -72,7 +85,30 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
                     console.log(await response.json());
                 }
 
+                if (currentTask.type == 'task') {
 
+                    if (currentTask.action == 'DELETE') {
+                        const response = await DeleteTaskMutation.mutateAsync({
+                            taskId: currentTask.command.taskId
+                        })
+                        console.log(await response.json());
+                    } else {
+                        const response = await TaskMutation.mutateAsync({
+                            action: currentTask.action,
+                            taskDetail: currentTask.command.taskDetail
+                        })
+                        console.log(await response.json());
+                    }
+
+                }
+
+                if (currentTask.type == 'completedTask') {
+                    const response = await CompletedTaskMutation.mutateAsync({
+                        completedTaskItem: currentTask.command.completedTaskItem,
+                        taskId : currentTask.command.taskId
+                    })
+                    console.log(await response.json());
+                }
 
 
             } catch (error) {

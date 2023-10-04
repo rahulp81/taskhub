@@ -100,6 +100,7 @@ export default function CreateProjectDialog({ openModal, setOpenModal, createPro
                                         } else {
                                             setError('A project with the same name already exists!.');
                                         }
+                                        setChecked(false);
                                     }}>
                                     Add Project
                                 </button>
