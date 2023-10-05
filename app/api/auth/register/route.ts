@@ -12,7 +12,7 @@ const {name,email,password} = userData;
 const checkUser = await UserModel.findOne({email:email});
 
 if(checkUser){
-   return NextResponse.json({error:'Existing User'}, {status:200})
+   return NextResponse.json({error:'User with this Email already exists!'}, {status:200})
 }
 
 const hashedPassword = await bcryt.hash(password,10);

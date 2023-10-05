@@ -34,7 +34,7 @@ function addTask({today,project,tags,priority}: addTask) {
 
   const setTask = useContext(SetTaskContext);
   const currentLabels =
-    <span className='gap-1 flex flex-wrap'>
+    <span className='gap-1 flex flex-wrap sm:justify-end'>
       {labels?.map((label, index) => (
         <span className='bg-blue-100 rounded px-1' key={index}>
           #{label}
@@ -50,9 +50,8 @@ function addTask({today,project,tags,priority}: addTask) {
     const id = Date.now() as number;
     const priority = taskPriority;
     const due = dueDate;
-    const project = taskproject;
     const tags = labels || [];
-    const taskDetail = { name, description, id, priority, due, labels : tags, project };
+    const taskDetail = { name, description, id, priority, due, labels : tags, project : taskproject };
     setTask((prevTasks) => [...prevTasks, taskDetail]);
     toast.success(
       <p>
@@ -71,7 +70,7 @@ function addTask({today,project,tags,priority}: addTask) {
     const form = e.currentTarget as HTMLFormElement;
     setTaskPriority('P4');
     setDueDate(today ? todaysDate : null);
-    setLabels(labels);
+    setLabels([]);
     setTaskProject(project ? project : 'Inbox')
     form.reset();
     setName('');
@@ -110,10 +109,10 @@ function addTask({today,project,tags,priority}: addTask) {
         // onClick={() => {setEditing(!editing)}}
         <form className='border-[1px] rounded-lg flex flex-col  border-gray-400' onSubmit={createTask} ref={formRef}>
           <div className='gap-2 flex flex-col px-3 py-2'>
-            <div className='flex  justify-between pr-5 '>
+            <div className='flex  justify-between flex-wrap  gap-y-2 pb-1  '>
               <input type="text" name='task-name' placeholder='Task Name' className='grow placeholder:font-medium font-medium'
                 value={`${name}`} onChange={(e) => { setName(e.target.value) }} />
-              <p className=''>{currentLabels}</p>
+              <p className='flex sm:max-w-[300px] self-center'>{currentLabels}</p>
             </div>
 
             <input type="text" name='task-description' placeholder='Description' className='placeholder:font-normal ml-0.5 text-[14px] placeholder:text-sm ' />

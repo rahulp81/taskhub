@@ -37,7 +37,7 @@ function FiltersLabels() {
             clearTimeout(fetchTimeoutRef.current[label]!);
         }
 
-        fetchTimeoutRef.current[label] = setTimeout(async () => {
+        fetchTimeoutRef.current[label] = setTimeout( () => {
             if (isFavorite === true) {
 
                 setSync({

@@ -36,7 +36,8 @@ export default function CreateProjectDialog({ openModal, setOpenModal, createPro
                 onClose={() => {
                     setName('')
                     setError('')
-                    setOpenModal(false)}}
+                    setOpenModal(false)
+                }}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
                 PaperProps={{
@@ -53,7 +54,7 @@ export default function CreateProjectDialog({ openModal, setOpenModal, createPro
                     <h1 className='text-xl py-2 px-3 border-b-[1px] font-extrabold'>Add a Project</h1>
                     <div className='flex flex-col  gap-3 '>
                         <label className='flex flex-col relative px-3 gap-1' htmlFor="name">
-                        {error ? <p className=' text-red-500  font-medium'>{error}</p> : null}
+                            {error ? <p className=' text-red-500  font-medium'>{error}</p> : null}
                             <h2 className='font-bold  '>Name
                             </h2>
                             <input id='name' className='border-[1px] border-stone-300 px-1 py-1 rounded' type="text" value={name}
@@ -88,7 +89,8 @@ export default function CreateProjectDialog({ openModal, setOpenModal, createPro
                                 </button>
                                 <button
                                     type='button'
-                                    className='text-white text-sm font-semibold px-4 py-2 rounded bg-blue-500 hover:bg-blue-700'
+                                    className={`${name ? 'bg-blue-500 hover:bg-blue-600 ' : 'bg-blue-200 cursor-not-allowed '}  text-sm px-3 py-1.5 rounded font-semibold  text-white `}
+                                    disabled={(name) ? false : true}
                                     onClick={() => {
                                         // Check if a project with the same name already exists
                                         const isProjectExists = projects.includes(name);

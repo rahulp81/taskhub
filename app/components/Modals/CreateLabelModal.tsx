@@ -100,7 +100,9 @@ export default function CreateLabelDialog({ openModal, setOpenModal }
                                     }}>
                                     Cancel
                                 </button>
-                                <button type='button' className='text-white text-sm font-semibold  px-4 py-2 rounded bg-blue-500 hover:bg-blue-700'
+                                <button type='button'
+                                  className={`${name ? 'bg-blue-500 hover:bg-blue-600 ' : 'bg-blue-200 cursor-not-allowed '}  text-sm px-3 py-1.5 rounded font-semibold  text-white `}
+                                    disabled={(name) ? false : true}
                                     onClick={() => {
                                         // Check if a project with the same name already exists
                                         const labelExists = tags?.includes(name);

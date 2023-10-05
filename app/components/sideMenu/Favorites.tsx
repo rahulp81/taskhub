@@ -24,16 +24,21 @@ function Favorites() {
     function removeFavoriteByName(nameToRemove: string, type: string) {
         if (favourite !== null) {
             console.log('called');
-            
+
             const updatedFavorites = favourite.filter((fav) => !(fav.type == type && fav.name == nameToRemove));
             setFavourite(updatedFavorites);
-            setSync({
-                type: 'fav_remove',
-                command: {
-                    name: nameToRemove,
-                    type: type,
-                }
-            })
+            setTimeout(() => {
+                setSync({
+                    type: 'fav_remove',
+                    command: {
+                        name: nameToRemove,
+                        type: type,
+                    }
+                })
+
+            }, 500);
+
+
         }
     }
 
