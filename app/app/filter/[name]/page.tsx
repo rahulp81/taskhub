@@ -5,11 +5,9 @@ import { TaskContext, SetTaskContext } from '../../../components/context/taskCon
 import ViewContainer from '@/app/components/Svg/ViewContainer'
 import Task from "@/app/components/addTask/Task"
 import AddTask from '../../../components/addTask/addTask'
-import { useSession } from 'next-auth/react'
 import sideMenuContext from '../../../components/context/sideMenuContext'
 
 export default function Page({ params }: { params: { name: string } }) {
-    const { data: session } = useSession();
     const priority = params.name;
     const priorityName = params.name == 'P4' ? 'Priority 4' : params.name == 'P2' ? 'Priority 2' :
                         params.name == 'P3' ? 'Priority 3' : 'Prioirty 4'
@@ -18,10 +16,6 @@ export default function Page({ params }: { params: { name: string } }) {
     const labelTask = tasks.filter((t) => {
         return t.priority == priority;
     })
-    console.log(labelTask, 'label task');
-
-    const setTask = useContext(SetTaskContext)
-    console.log(tasks);
 
 
     return (
@@ -36,10 +30,10 @@ export default function Page({ params }: { params: { name: string } }) {
                 <div className="flex flex-col w-full gap-2 ">
                     <ul>
                         {labelTask.map((task) => (
-                            <Task key={task.id} task={task} />
+                            <Task  key={task.id} task={task} />
                         ))}
                     </ul>
-                    <AddTask />
+                    <AddTask priority={priority} />
                 </div>
             </main>
 

@@ -37,7 +37,7 @@ export default function Page({ params }: { params: { name: string } }) {
                             <Task key={task.id} task={task} />
                         ))}
                     </ul>
-                    <AddTask />
+                    <AddTask tags={[label]} />
                 </div>
             </main>
 

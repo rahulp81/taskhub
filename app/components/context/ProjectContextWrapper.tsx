@@ -1,4 +1,4 @@
-import React, {useState,useContext,createContext} from 'react'
+import React, {useState,useContext,createContext, useRef, useEffect} from 'react'
 
 interface projectContextPropType  {
 projects: string[] | null ;
@@ -19,6 +19,36 @@ export function useProjectContext(){
 
 export function ProjectProvider({children}:  {children : React.ReactNode}) {
   const[projects,setProjects] = useState<string[] | null>([]);
+  const retryRef = useRef<number>(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      console.log('calling fetch');
+      try {
+        const res = await fetch('/api/app/project');
+        if (!res.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        const { projects } = await res.json();
+        console.log('result project:', projects);
+
+        setProjects(projects);
+        retryRef.current = 0;
+      } catch (error) {
+        if (retryRef.current < 3) {
+          retryRef.current += 1;
+          await fetchData(); // Retry the fetchData function
+        } else {
+          retryRef.current = 0;
+          console.error('Failed to fetch data after 3 retries:', error);
+        }
+      }
+    };
+
+    fetchData(); // Call the async function inside useEffect
+  }, []);
+
+
   return (
     <ProjectContext.Provider value= {{projects, setProjects}}>
       {children}

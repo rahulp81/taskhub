@@ -6,6 +6,34 @@ import taskModels from "@/app/models/task.models";
 import FavoritesModel from "@/app/models/favorite.model";
 import { getServerSession } from "next-auth";
 
+
+export async function GET(req: Request) {
+  await dbConnect();
+  const session = await getServerSession();
+  if (!session) {
+    return NextResponse.json(
+      { error: "User not autheticated" },
+      { status: 403 }
+    );
+  }
+  const user = await UserModel.findOne({ email: session?.user?.email });
+  if (!user) {
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
+
+  try {
+    const labels = await TagsModel.find({ user_id: user._id });
+    if (labels) {
+      const tags = labels.map((l)=> l.tags).flat(1)
+      return NextResponse.json({ labels: tags });
+    }
+  } catch (error) {
+    console.error("Error getting project:", error);
+    return NextResponse.json({ error: error }, { status: 500 });
+  }
+}
+
+
 export async function POST(req: Request) {
   await dbConnect();
   const session = await getServerSession();

@@ -5,6 +5,33 @@ import UserModel from "@/app/models/users.model";
 import { getServerSession } from "next-auth";
 import taskModels from "@/app/models/task.models";
 
+export async function GET(req: Request) {
+  await dbConnect();
+  const session = await getServerSession();
+  if (!session) {
+    return NextResponse.json(
+      { error: "User not autheticated" },
+      { status: 403 }
+    );
+  }
+
+  const user = await UserModel.findOne({ email: session?.user?.email });
+  if (!user) {
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
+
+  try {
+    const completedTask = await CompletedTaskModel.find({ user_id: user._id });
+    if (completedTask) {
+      return NextResponse.json({ completedTask: completedTask });
+    }
+  } catch (error) {
+    console.error("Error saving task:", error);
+    return NextResponse.json({ error: error }, { status: 500 });
+  }
+}
+
+
 export async function POST(req: Request) {
   await dbConnect();
   const session = await getServerSession();

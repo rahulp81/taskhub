@@ -5,15 +5,18 @@ import sideMenuContext from '../../components/context/sideMenuContext'
 import AddTask from '../../components/addTask/addTask'
 import ViewContainer from "@/app/components/Svg/ViewContainer"
 import { TaskContext } from "@/app/components/context/taskContext"
+import { TaskLoadingContext } from "@/app/components/context/TasksContext"
 import Task from "@/app/components/addTask/Task"
 import { redirect } from "next/navigation"
+import PulseLoader from "react-spinners/PulseLoader"
 
 function Inbox() {
   const { data: session } = useSession();
   const tasks = useContext(TaskContext);
+  const loading = useContext(TaskLoadingContext);
   const sideMenuAtive = useContext(sideMenuContext);
 
-  const inBoxTask = tasks.filter((t)=> (t.project=='Inbox'))
+  const inBoxTask = tasks.filter((t) => (t.project == 'Inbox'))
 
 
   if (!session) {
@@ -27,13 +30,18 @@ function Inbox() {
           <h1 className="font-bold text-[24px]">Inbox</h1>
           <ViewContainer />
         </div>
-        <div className="flex flex-col w-full gap-2 ">
-          <ul>
-            {inBoxTask.map((task) => (
-              <Task key={task.id} task={task}/>
-            ))}
-          </ul>
-          <AddTask />
+        <div className={`flex flex-col w-full min-h-full gap-2 `}>
+          {loading ?
+            (<div className=" flex h-full items-center justify-center" >
+              <PulseLoader color="#0911ed" size={15}/>
+            </div>) :
+            <ul>
+              {inBoxTask.map((task) => (
+                <Task key={task.id} task={task} />
+              ))}
+              <AddTask />
+            </ul>
+          }
         </div>
       </main>
 

@@ -6,6 +6,33 @@ import UserModel from "@/app/models/users.model";
 import favoriteModel from "@/app/models/favorite.model";
 import { getServerSession } from "next-auth";
 
+export async function GET(req: Request) {
+  await dbConnect();
+  const session = await getServerSession();
+  if (!session) {
+    return NextResponse.json(
+      { error: "User not autheticated" },
+      { status: 403 }
+    );
+  }
+
+  const user = await UserModel.findOne({ email: session?.user?.email });
+  if (!user) {
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
+
+  try {
+    const projects = await ProjectsModel.find({ user_id: user._id });
+    if (projects) {
+      const project = projects.map((p)=> p.projects).flat(1);
+      return NextResponse.json({ projects: project });
+    }
+  } catch (error) {
+    console.error("Error getting project:", error);
+    return NextResponse.json({ error: error }, { status: 500 });
+  }
+}
+
 export async function POST(req: Request) {
   await dbConnect();
   const session = await getServerSession();

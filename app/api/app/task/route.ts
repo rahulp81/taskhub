@@ -4,6 +4,32 @@ import TaskModel from "@/app/models/task.models";
 import UserModel from "@/app/models/users.model";
 import { getServerSession } from "next-auth";
 
+export async function GET(req: Request) {
+  await dbConnect();
+  const session = await getServerSession();
+  if (!session) {
+    return NextResponse.json(
+      { error: "User not autheticated" },
+      { status: 403 }
+    );
+  }
+
+  const user = await UserModel.findOne({ email: session?.user?.email });
+  if (!user) {
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
+
+  try {
+    const tasks = await TaskModel.find({ user_id: user._id });
+    if (tasks) {
+      return NextResponse.json({ tasks: tasks });
+    }
+  } catch (error) {
+    console.error("Error saving task:", error);
+    return NextResponse.json({ error: error }, { status: 500 });
+  }
+}
+
 export async function POST(req: Request) {
   await dbConnect();
   const session = await getServerSession();
@@ -66,8 +92,8 @@ export async function PATCH(req: Request) {
   }
 
   try {
-    const task = await TaskModel.findOneAndUpdate(
-      { id: id },
+    await TaskModel.findOneAndUpdate(
+      { id: id, user_id: user._id },
       {
         user_id: user._id,
         name,
@@ -79,6 +105,7 @@ export async function PATCH(req: Request) {
         project,
       }
     );
+
     return NextResponse.json({ success: "Successfully Task updated" });
   } catch (error) {
     // Handle any errors that occur during task creation
