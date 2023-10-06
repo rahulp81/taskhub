@@ -18,7 +18,7 @@ export default function Search({ openModal, setOpenModal }
 
     const filteredTasks = search ? tasks?.filter((task) => {
         return (task.name?.toLowerCase().includes(search.toLowerCase()) ||
-            task.labels?.some((l) => l.toLowerCase().includes(search.toLowerCase()))  ||
+            task.labels?.some((l) => l.toLowerCase().includes(search.toLowerCase())) ||
             task.project?.toLowerCase().includes(search.toLowerCase()) ||
             task.description?.toLowerCase().includes(search.toLowerCase()))
     })
@@ -61,14 +61,14 @@ export default function Search({ openModal, setOpenModal }
                         </label>
                     </form>
                     <div className='flex h-[200px] overflow-y-scroll p-2.5 px-4 w-full' >
-                        {!search ? <span className='break-words max-w-[400px] '>Type to Search Task with its Name , Description, Project or Labels</span> 
-                         : (search && filteredTasks.length > 0) ?
-                            <ul className='w-full'>
-                                {filteredTasks.map((task) => (
-                                    <Task key={task.id} task={task} />
-                                ))}
-                            </ul>
-                            : 'No Tasks Found'
+                        {!search ? <span className='break-words max-w-[400px] '>Type to Search Task with its Name , Description or Labels</span>
+                            : (search && filteredTasks.length > 0) ?
+                                <ul className='w-full'>
+                                    {filteredTasks.map((task) => (
+                                        <Task key={task.id} task={task} />
+                                    ))}
+                                </ul>
+                                : 'No Tasks Found'
                         }
                     </div>
                 </div>

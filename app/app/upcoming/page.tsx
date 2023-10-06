@@ -22,9 +22,9 @@ function Upcoming() {
         (
             t && t.due && t.due > new Date()
         ))
-    
+
     console.log(upComingTasks, new Date());
-    
+
 
     const uniqueDates: Date[] = [];
 
@@ -34,7 +34,7 @@ function Upcoming() {
         }
     });
 
-    uniqueDates.sort((a,b)=> {
+    uniqueDates.sort((a, b) => {
         return a.getTime() - b.getTime();
     })
 
@@ -44,14 +44,13 @@ function Upcoming() {
         redirect('/login')
     }
     return (
-        <div className={`grow  flex justify-center  transition-all duration-[500ms] ease-in-out ${sideMenuAtive ? 'min-[800px]:ml-[275px]' :'' }`}>
+        <div className={`grow  flex justify-center  transition-all duration-[500ms] ease-in-out ${sideMenuAtive ? 'min-[800px]:ml-[275px]' : ''}`}>
 
             <main className="app-container | flex flex-col gap-5 mt-8">
                 <div className="flex justify-between pr-2 pb-3 border-b-[1px] ">
                     <h1 className="font-bold text-[24px]">Upcoming Tasks</h1>
-                    <ViewContainer />
                 </div>
-                <OverDue/>
+                <OverDue />
                 <div className="flex flex-col w-full gap-2 ">
                     <ul className="flex flex-col gap-4">
                         {uniqueDates.map((date, index) => (

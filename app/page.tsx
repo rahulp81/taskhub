@@ -8,7 +8,7 @@ export default async function Homepage() {
   if(!session){
     redirect('/login')
   }else{
-    redirect("/app")
+    redirect("/app/today")
   }
   return (
     <>

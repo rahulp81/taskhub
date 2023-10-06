@@ -19,7 +19,6 @@ function Today({params} : {params : {name  : string}} ) {
         <div className="flex justify-between pr-2 pb-3 border-b-[1px] ">
           <h1 className="font-bold text-[24px]   ">{project}
           </h1>
-          <ViewContainer />
         </div>
         <OverDue/>
         <div className="flex flex-col w-full gap-2 ">

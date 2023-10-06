@@ -103,7 +103,7 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
 
             <div className="flex items-center">
               <button className={`flex text-white gap-1.5 p-1 rounded items-center text-sm hover:bg-blue-800 ${openProfile ? 'bg-blue-700' : ''}`} aria-describedby={idProfile} onClick={handleClickProfile}>
-                <img src={`${session?.user?.image}`} alt="profile" width={25} height={25} className="rounded-full" />
+                <img src={`${session?.user?.image || '/avatar.png' }`} alt="profile" width={25} height={25} className="rounded-full" />
               </button>
             </div>
 

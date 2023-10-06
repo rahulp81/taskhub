@@ -36,7 +36,7 @@ const ProfileDropDown = ({ open, anchorEl, onClose }: { open: boolean, anchorEl:
                 <div className='flex flex-col gap-2.5 py-3 '>
                     <div className='flex gap-3  px-3'>
                         <div className='flex items-center'>
-                            <img className='rounded-full' width={25} height={25} src={`${session?.user?.image}`} alt='Profile' />
+                            <img className='rounded-full' width={25} height={25} src={`${session?.user?.image || '/avatar.png'}`} alt='Profile' />
                         </div>
                         <div className='flex flex-col text-sm'>
                             <p className='font-bold'>{session?.user?.name}</p>
