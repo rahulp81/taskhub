@@ -1,16 +1,11 @@
 "use client"
 import React, { FormEvent, useContext, useRef, useState } from 'react';
 import Dialog from '@mui/material/Dialog';
-import Switch from '@mui/material/Switch';
-import { FormControlLabel } from '@mui/material';
 import { SetTaskContext } from '../context/taskContext';
 import DueDate from '../Svg/DueDate';
 import Priority from '../Svg/Priority';
 import Label from '../Svg/Label';
 import Project from '../projects/Project';
-
-const label = { inputProps: { 'aria-label': 'Color switch demo' } };
-
 
 export default function CreateProjectDialog({ openModal, setOpenModal }
     : {

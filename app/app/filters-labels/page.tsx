@@ -136,7 +136,7 @@ function FiltersLabels() {
 
 
     return (
-        <div className={`grow  flex justify-center  transition-all duration-[500ms] ease-in-out ${sideMenuAtive ? '' : 'min-[800px]:ml-[-275px]'}`}>
+        <div className={`grow  flex justify-center  transition-all duration-[500ms] ease-in-out ${sideMenuAtive ? 'min-[800px]:ml-[275px]' :'' }`}>
             <main className="app-container | flex flex-col gap-4 mt-8">
                 <h1 className="font-bold mb-4 text-[20px]">Filters & Labels</h1>
                 <div className="flex flex-col w-full gap-4 ">

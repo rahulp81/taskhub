@@ -63,7 +63,7 @@
 
 @media (max-width: 800px) {
   .side-menu {
-    position: absolute;
+    position: fixed;
     z-index: 1000;
   }
   .main-container.active::before {
@@ -81,6 +81,10 @@
   .main-container {
     position: relative;
   }
+}
+
+.side-menu {
+  height: calc(100vh);
 }
 
 

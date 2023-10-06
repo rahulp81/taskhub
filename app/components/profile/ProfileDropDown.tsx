@@ -29,7 +29,7 @@ const ProfileDropDown = ({ open, anchorEl, onClose }: { open: boolean, anchorEl:
                 onClose={onClose}
                 anchorOrigin={{
                     vertical: 'bottom',
-                    horizontal: -150,
+                    horizontal: -50,
                 }}
             >
                 {/* Content of the Popover */}

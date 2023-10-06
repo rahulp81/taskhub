@@ -41,7 +41,7 @@ function SignUp() {
         password: password1,
       }
 
-      const res = await fetch('http://localhost:3000/api/auth/register', {
+      const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",
@@ -64,7 +64,7 @@ function SignUp() {
       }
     } catch (error) {
       console.error("Error sending form data:", error);
-      setError('Something went wrong please check the console')
+      setError(`Something went wrong please check the console ${error}`)
     } finally {
       setLoading(false);
     }

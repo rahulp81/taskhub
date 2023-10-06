@@ -23,7 +23,7 @@ function Inbox() {
     redirect('/login')
   }
   return (
-    <div className={`grow  flex justify-center  transition-all duration-[500ms] ease-in-out ${sideMenuAtive ? '' : 'min-[800px]:ml-[-275px]'}`}>
+    <div className={`grow  flex justify-center  transition-all duration-[500ms] ease-in-out ${sideMenuAtive ? 'min-[800px]:ml-[275px]' :'' }`}>
 
       <main className="app-container | flex flex-col gap-7  mt-8">
         <div className="flex justify-between pr-2 pb-3 border-b-[1px] ">

@@ -14,7 +14,7 @@ function SideMenu({ active }: { active: boolean }) {
 
     return (
         <section
-            className={`flex  flex-col gap-10 side-menu min-h-full w-[275px] bg-[#fafafa] px-6 pt-8 side-menu
+            className={`flex  flex-col fixed overflow-x-hidden left-0   gap-10 side-menu min-h-full w-[275px] bg-[#fafafa] px-6 pt-8 side-menu
               transform transition-transform duration-500 ease-in-out ${active ? 'translate-x-0 ' : '-translate-x-[300%]  '
                 }`}
         >

@@ -20,13 +20,13 @@ type addTask = {
   priority? : string,
 }
 
-function addTask({today,project,tags,priority}: addTask) {
+function addTask({today,project,tags,priority : P}: addTask) {
   const [editing, setEditing] = useState(false)
-  const [taskPriority, setTaskPriority] = useState('P4');
+  const [taskPriority, setTaskPriority] = useState(P ? P : 'P4' );
   const [name, setName] = useState('');
   const formRef = useRef<HTMLFormElement>(null);
   const [dueDate, setDueDate] = useState<Date | null>(today ? todaysDate : null)
-  const [labels, setLabels] = useState<string[] | null>([])
+  const [labels, setLabels] = useState<string[] | null>(tags ? tags : [])
   const [taskproject, setTaskProject] = useState<string | null>(project ? project : 'Inbox')
 
   const {setSync} = useSyncContext();
@@ -68,9 +68,9 @@ function addTask({today,project,tags,priority}: addTask) {
     })
 
     const form = e.currentTarget as HTMLFormElement;
-    setTaskPriority('P4');
+    setTaskPriority(P ? P : 'P4');
     setDueDate(today ? todaysDate : null);
-    setLabels([]);
+    setLabels (tags ? tags : []);
     setTaskProject(project ? project : 'Inbox')
     form.reset();
     setName('');
@@ -80,9 +80,9 @@ function addTask({today,project,tags,priority}: addTask) {
   function cancelTask() {
     if (formRef.current) {
       setEditing(!editing);
-      setTaskPriority('P4');
+      setTaskPriority(P  ? P : 'P4');
       setDueDate(today ? todaysDate : null);
-      setLabels([]);
+      setLabels(tags ? tags : []);
       setTaskProject(project ? project : 'Inbox')
       formRef.current.reset();
       setName('');

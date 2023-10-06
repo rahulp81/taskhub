@@ -19,7 +19,7 @@ export default function Page({ params }: { params: { name: string } }) {
 
 
     return (
-        <div className={`grow  flex justify-center  transition-all duration-[500ms] ease-in-out ${sideMenuAtive ? '' : 'min-[800px]:ml-[-275px]'}`}>
+        <div className={`grow  flex justify-center  transition-all duration-[500ms] ease-in-out ${sideMenuAtive ? 'min-[800px]:ml-[275px]' :'' }`}>
 
             <main className="app-container | flex flex-col  mt-8">
                 <div className="flex justify-between pr-2 pb-3 border-b-[1px] ">

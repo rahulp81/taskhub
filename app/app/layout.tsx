@@ -21,6 +21,7 @@ import ProfileDropDown from "../components/profile/ProfileDropDown"
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { SyncProvider } from "../components/context/SyncContext"
+import Search from "../components/Modals/SearchModal"
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
   const [addTaskModal, toggleAddTaskModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [anchorElProfile, setAnchorElProfile] = useState<HTMLButtonElement | null>(null);
+  const [searchActive, setSearchActive] = useState(false);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -65,7 +67,7 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
 
   return (
     <>
-      <header className="bg-blue-500 flex items-center h-[43px] justify-center overflow-clip  z-40">
+      <header className="bg-blue-500 flex items-center h-[43px] justify-center overflow-clip sticky top-0  z-40">
         <div className="flex items-center justify-between lg:px-7 px-5 grow max-w-[1800px]">
           <div className="flex gap-2.5 shrink-0 upper-left-menu">
             <button className=" p-1 rounded" onClick={toggleSideMenu}>
@@ -74,16 +76,19 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
             <Link href={'/app/today'} className=" p-1 rounded">
               <Image src="/icons/home.svg" alt="home" width={24} height={24} />
             </Link>
-            <label htmlFor="search" className="label | flex items-center text-sm relative bg-blue-400 rounded-md px-1.5 hover:bg-white">
+            <button className="label | flex items-center text-sm relative bg-blue-400 rounded-md px-2 sm:w-36 
+             text-white hover:bg-white hover:text-blue-900" onClick={()=> setSearchActive(!searchActive)} >
               <SearchIcon />
               <div className="flex shrink">
-                <input id="search" type="text" placeholder="Search" className="rounded bg-transparent left-0 ml-2
-                relative focus:outline-none placeholder:text-[14px]  min-[460px]:placeholder:text-white "/>
-                <button className="absolute top-[3.1px] mr-2 right-0 hidden ">
+                <span id="search" className="rounded bg-transparent left-0 ml-2
+                relative focus:outline-none ">
+                  Search
+                </span>
+                <span className="absolute top-[3.1px] mr-2 right-0 hidden ">
                   <Image src={'/icons/close.svg'} width={24} height={24} alt="close" className="opacity-60" />
-                </button>
+                </span>
               </div>
-            </label>
+            </button>
           </div>
           <div className="flex gap-5 shrink-0">
             <button onClick={() => toggleAddTaskModal(!addTaskModal)}>
@@ -103,10 +108,10 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
             </div>
 
           </div>
-        </div>
-      </header>
-      <main className={`flex grow justify-center main-container menu-open ${sideMenuActive ? 'active' : ''}`}>
-        <div className="max-w-[1800px] flex flex-row  w-full">
+        </div >
+      </header >
+      <main className={`flex grow justify-center  top-0 main-container menu-open ${sideMenuActive ? 'active' : ''}`}>
+        <div className="max-w-[1800px] flex flex-row w-full">
           <SideMenuContext.Provider value={sideMenuActive}>
             <QueryClientProvider client={queryClient}>
               <SyncProvider>
@@ -122,6 +127,7 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
                           <MyPopover anchorEl={anchorEl} onClose={handleClose} open={open} />
                           <ProfileDropDown anchorEl={anchorElProfile} onClose={handleCloseProfile} open={openProfile} />
                           <ToastContainer position="bottom-left" autoClose={1500} theme="dark" />
+                          <Search setOpenModal={setSearchActive}  openModal={searchActive} />
                           {/* Components */}
                         </CompletedTaskWrapper>
                       </FavouriteProvider>
