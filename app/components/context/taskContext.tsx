@@ -16,4 +16,5 @@ type Task = {
   // Create the contexts
   export const TaskContext = createContext<TaskContextType>([]);
   export const SetTaskContext = createContext<SetTaskContextType>(() => {});
-  
+  export const OverDueTasksContext = createContext<TaskContextType>([]);
+  export const SetOverDueTasksContext = createContext<SetTaskContextType>(() => {});

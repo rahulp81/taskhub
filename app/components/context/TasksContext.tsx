@@ -1,5 +1,5 @@
-import { createContext, useState, useEffect, useRef } from 'react';
-import { TaskContext, SetTaskContext } from "./taskContext";
+import { createContext, useState, useEffect, useRef, useContext } from 'react';
+import { TaskContext, SetTaskContext, OverDueTasksContext, SetOverDueTasksContext } from "./taskContext";
 
 type Task = {
   id: number,
@@ -13,6 +13,14 @@ type Task = {
 // Create a context with an initial value of false (not loading)
 export const TaskLoadingContext = createContext<boolean>(false);
 
+export function useCheckOverdueTask() {
+  const overdue = useContext(OverDueTasksContext);
+  if (!overdue) {
+    throw new Error("useTagsContext must be used within a TagsProvider");
+  }
+  return { overdue };
+}
+
 function TasksContext({
   children,
 }: {
@@ -20,6 +28,10 @@ function TasksContext({
 }) {
   const [task, setTask] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const currentTime = new Date();
+  currentTime.setHours(0, 0, 0, 0)
+  const overdueTasks = task.filter((t: Task) => t.due && t.due < currentTime)
 
   const retryRef = useRef<number>(0);
   useEffect(() => {
@@ -32,12 +44,13 @@ function TasksContext({
           throw new Error('Failed to fetch data');
         }
         const { tasks } = await res.json();
-        console.log('result', tasks);
+
 
         const tasksWithFormattedDue = tasks.map((task: Task) => ({
           ...task,
           due: task.due ? new Date(task.due) : null, // Convert due date to desired format
         }));
+        console.log('result', tasksWithFormattedDue);
         setTask(tasksWithFormattedDue);
         retryRef.current = 0;
       } catch (error) {
@@ -53,15 +66,17 @@ function TasksContext({
       }
     };
 
-    fetchData(); // Call the async function inside useEffect
+    fetchData();
   }, []);
 
   return (
     <TaskContext.Provider value={task}>
       <SetTaskContext.Provider value={setTask}>
+        <OverDueTasksContext.Provider value={overdueTasks}>
         <TaskLoadingContext.Provider value={loading}>
           {children}
         </TaskLoadingContext.Provider>
+        </OverDueTasksContext.Provider>
       </SetTaskContext.Provider>
     </TaskContext.Provider>
   );

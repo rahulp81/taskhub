@@ -21,6 +21,9 @@ function Upcoming() {
         (
             t && t.due && t.due > new Date()
         ))
+    
+    console.log(upComingTasks, new Date());
+    
 
     const uniqueDates: Date[] = [];
 

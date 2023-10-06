@@ -14,9 +14,11 @@ import DeleteDialog from '../Modals/DeleteModal';
 import { useCompletedTaskContext } from '../context/CompletedTaskContextWrapper';
 import { toast } from 'react-toastify';
 import { useSyncContext } from '../context/SyncContext';
+import { useCheckOverdueTask } from '../context/TasksContext';
 
 interface TaskProps {
   task: Task;
+  overdue?: boolean
 }
 
 interface completedTaskType {
@@ -29,7 +31,7 @@ interface completedTaskType {
 const todaysDate = new Date();
 todaysDate.setHours(0, 0, 0, 0);
 
-export default function Task({ task }: TaskProps) {
+export default function Task({ task, overdue }: TaskProps) {
   const updateTask = useContext(SetTaskContext);
   const tasks = useContext(TaskContext)
   const [isEditing, setIsEditing] = useState(false);
@@ -43,8 +45,9 @@ export default function Task({ task }: TaskProps) {
   const [updatedTaskProject, setUpdatedTaskProject] = useState<string | null>(taskProject)
   const [modalOpen, setModalOpen] = useState(false);
   const doneButtonRef = useRef<HTMLButtonElement | null>(null);
-  const { completedTask, setCompletedTask } = useCompletedTaskContext()
+  const { setCompletedTask } = useCompletedTaskContext()
   const { setSync } = useSyncContext();
+  const { overdue : overDue } = useCheckOverdueTask()
 
   // For Editor
   const [name, setName] = useState(task.name);
@@ -167,7 +170,10 @@ export default function Task({ task }: TaskProps) {
           Task {name} completed
         </p>
       );
+
+
     }, 300);
+
   }
 
 

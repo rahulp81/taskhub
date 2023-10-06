@@ -4,6 +4,7 @@ import Popover from '@mui/material/Popover';
 import { useCompletedTaskContext } from '../context/CompletedTaskContextWrapper';
 import { TaskContext } from '../context/taskContext';
 import Link from 'next/link';
+import { useCheckOverdueTask } from '../context/TasksContext';
 
 interface completedTaskType {
     taskName: string,
@@ -17,6 +18,7 @@ const MyPopover = ({ open, anchorEl, onClose }: { open: boolean, anchorEl: HTMLB
     const lateTasks = completedTask?.filter((t) => (t.status == 'late'));
     const tasks = useContext(TaskContext);
     const todaysTask = tasks.filter((task) => task.due?.toDateString() == new Date().toDateString())
+    const { overdue } = useCheckOverdueTask()
 
     const getLastSevenDaysData = (completedTaskData: completedTaskType[] | null): { dayName: string; tasksCompleted: number }[] => {
         const today = new Date();
@@ -74,7 +76,7 @@ const MyPopover = ({ open, anchorEl, onClose }: { open: boolean, anchorEl: HTMLB
                             </span>
                         </span>
                         <span className='text-xs'>Late Completed Tasks : <span className='font-bold'>{lateTasks?.length}</span> </span>
-                        <span className='text-red-600 text-xs'>Overdue Tasks : </span>
+                        <span className='text-red-600 text-xs'>Overdue Tasks : <span className='font-bold underline'>{overdue?.length} </span> </span>
                     </div>
                     <div className=' text-[13px] flex flex-col gap-2 font-bold border-t-[1px] py-3'>
                         Completed Tasks in Last Week
