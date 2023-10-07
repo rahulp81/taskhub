@@ -6,6 +6,10 @@ import DueDate from '../Svg/DueDate';
 import Priority from '../Svg/Priority';
 import Label from '../Svg/Label';
 import Project from '../projects/Project';
+import { useSyncContext } from '../context/SyncContext';
+import { toast } from 'react-toastify';
+import Link from 'next/link';
+
 
 export default function CreateProjectDialog({ openModal, setOpenModal }
     : {
@@ -19,6 +23,7 @@ export default function CreateProjectDialog({ openModal, setOpenModal }
     const [dueDate, setDueDate] = useState<Date | null>(null)
     const [labels, setLabels] = useState<string[] | null>([])
     const [taskproject, setTaskProject] = useState<string | null>('Inbox')
+    const {setSync} = useSyncContext()
 
     const setTask = useContext(SetTaskContext);
     const currentLabels =
@@ -42,6 +47,18 @@ export default function CreateProjectDialog({ openModal, setOpenModal }
         const tags = labels || [];
         const taskDetail = { name, description, id, priority, due, labels: tags, project };
         setTask((prevTasks) => [...prevTasks, taskDetail]);
+        toast.success(
+            <p>
+             Task added to <Link className='underline font-bold' href={`/app/project/${taskproject}`} >{taskproject}</Link>
+            </p>
+          );
+        setSync({
+            type : 'task',
+            action  : 'POST',
+            command : {
+              taskDetail : taskDetail
+            }
+          })
         const form = e.currentTarget as HTMLFormElement;
         setTaskPriority('P4');
         setDueDate(null);
