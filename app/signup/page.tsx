@@ -58,7 +58,7 @@ function SignUp() {
           const res = await signIn("credentials", {
             email: email,
             password: password1,
-            callbackUrl: 'http://localhost:3000/app/today'
+            callbackUrl: '/app/today'
           })
         }
       }
