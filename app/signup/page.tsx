@@ -16,11 +16,11 @@ function SignUp() {
   const [loading, setLoading] = useState(false)
 
   function handleGoogleSignIn() {
-    signIn('google', { callbackUrl: 'http://localhost:3000/app/today' })
+    signIn('google', { callbackUrl: 'http://localhost:3000/app/today' }, { prompt: "login" })
   }
 
   function handleFacebookSignIn() {
-    signIn('facebook', { callbackUrl: 'http://localhost:3000/app/today' })
+    signIn('facebook', { callbackUrl: 'http://localhost:3000/app/today' }, { prompt: "login" })
   }
 
 

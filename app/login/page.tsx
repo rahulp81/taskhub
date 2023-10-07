@@ -15,11 +15,11 @@ function Login() {
   const router = useRouter();
 
   function handleGoogleSignIn() {
-    signIn('google', { callbackUrl: 'http://localhost:3000/app/today' })
+    signIn('google', { callbackUrl: '/app/today' }, { prompt: "login" })
   }
 
   function handleFacebookSignIn() {
-    signIn('facebook', { callbackUrl: 'http://localhost:3000/app/today' })
+    signIn('facebook', { callbackUrl: '/app/today' },{ prompt: "login" })
   }
 
   async function handleSubmit(e: FormEvent) {
