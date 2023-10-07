@@ -1,5 +1,5 @@
 "use client"
-import React from 'react'
+import React, { useContext } from 'react'
 import Inbox from './Inbox'
 import Today from './Today'
 import Upcoming from './Upcoming'
@@ -8,9 +8,11 @@ import Favorites from './Favorites'
 import Board from './Boards'
 import { usePathname } from 'next/navigation'
 import Link from 'next/dist/client/link'
+import { TaskContext } from "../context/taskContext";
 
 function SideMenu({ active }: { active: boolean }) {
     const currentRoute = usePathname();
+    const tasks = useContext(TaskContext)
 
     return (
         <section
@@ -20,13 +22,13 @@ function SideMenu({ active }: { active: boolean }) {
         >
             <nav className='flex flex-col gap-1 '>
                 <Link href={'/app/inbox'} className={currentRoute == '/app/inbox' ? 'active-link' : ''} >
-                    <Inbox />
+                    <Inbox noOfTaskInstances={tasks.filter((t) => t.project == 'Inbox').length} />
                 </Link>
                 <Link href={'/app/today'} className={currentRoute == '/app/today' ? 'active-link' : ''}>
-                    <Today />
+                    <Today noOfTaskInstances={tasks.filter((task) => task.due?.toDateString() == new Date().toDateString()).length} />
                 </Link>
                 <Link href={'/app/upcoming'} className={currentRoute == '/app/upcoming' ? 'active-link' : ''}>
-                    <Upcoming />
+                    <Upcoming noOfTaskInstances={tasks.filter((t) => t && t.due && t.due > new Date()).length} />
                 </Link>
                 <Link href={'/app/filters-labels'} className={currentRoute == '/app/filters-labels' ? 'active-link' : ''}>
                     <FilterLabel />

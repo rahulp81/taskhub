@@ -10,6 +10,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Taskhub",
   description: "Organize and Track your task and enhance productivity",
+  icons : '/logoLoader.png'
 };
 
 export default async function RootLayout({

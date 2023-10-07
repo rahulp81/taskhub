@@ -50,6 +50,31 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
         }
     }, [sync]);
 
+
+    useEffect(() => {
+        const handleBeforeUnload = (e : BeforeUnloadEvent) => {
+            if (processing.current) {
+                e.preventDefault();
+                e.returnValue =
+                    'Warning: Your changes are still being saved. Closing now will result in losing all the changes.';
+            }
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, []);
+
+
+
+
+
+
+
+
+
     const processQueue = async () => {
         if (queRef.current.length > 0 && !processing.current) {
             processing.current = true;
@@ -105,7 +130,7 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
                 if (currentTask.type == 'completedTask') {
                     const response = await CompletedTaskMutation.mutateAsync({
                         completedTaskItem: currentTask.command.completedTaskItem,
-                        taskId : currentTask.command.taskId
+                        taskId: currentTask.command.taskId
                     })
                     console.log(await response.json());
                 }

@@ -1,13 +1,13 @@
 import React from 'react'
 
-function Upcoming() {
+function Upcoming({noOfTaskInstances} : {noOfTaskInstances : number}) {
     return (
         <div className='flex text-[15px] justify-between hover:bg-[#eeeeee] p-1.5 rounded-md'>
             <div className='flex gap-2.5 items-center'>
                 <svg xmlns="http://www.w3.org/2000/svg" height={24} width={24} viewBox="0 0 24 24"><path d="M9 1V3H15V1H17V3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3H7V1H9ZM20 11H4V19H20V11ZM8 14V16H6V14H8ZM18 14V16H10V14H18ZM7 5H4V9H20V5H17V7H15V5H9V7H7V5Z" fill="rgba(186,26,195,1)"></path></svg>
                 <span className='text-black '>Upcoming</span>
             </div>
-            <span className='opacity-50 pr-1'>2</span>
+            <span className='opacity-50 pr-1'>{noOfTaskInstances}</span>
         </div>
     )
 }
